@@ -15,10 +15,12 @@ for file in listdir(htmlfilesdirectory):
 
         htmlfile = BeautifulSoup(file, 'html.parser')
         output = {}
-        htmlarticle=htmlfile.find("article")
-        print(htmlarticle)
+        htmlarticle=htmlfile.article
+        #print(htmlarticle)
 
-        title = htmlfile.find("title")
+        title = htmlarticle.find("h1")
+        print(title.text)
+
         output['title'] = title.text
 
         #output['test'] = "Hello world"
