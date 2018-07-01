@@ -2,30 +2,37 @@ from bs4 import BeautifulSoup
 import json
 from os import listdir,path
 from os.path import isfile, join,basename
-import requests
-
 
 
 def parseHTML():
     htmlfilesdirectory = 'corpusRawHTML'
     outputdirectory = 'output'
+    source = 'omics'
     # open file
-    for file in listdir(htmlfilesdirectory):
-        if isfile(join(htmlfilesdirectory, file)) and file.endswith('.html'):
-            file = open(join(htmlfilesdirectory, file))
-            print('parse file: ' + file.name)
+    readpathbasic=path.join(htmlfilesdirectory,source)
+    for categoryFolder in listdir(readpathbasic):
+        print(categoryFolder)
+        test = 0
+        readpath=path.join(readpathbasic,categoryFolder)
+        for file in listdir(readpath):
+            #print(file)
+            #categoryDirectory=path.join(outputdirectory,folder)
+            if isfile(join(readpath, file)) and file.endswith('.html') and test<=2:
+                file = open(join(readpath, file))
+                print('parse file: ' + file.name)
 
-            htmlfile = BeautifulSoup(file, 'html.parser')
-            output = {}
-            htmlarticle = htmlfile.article
-            output['title'] = getTitel(htmlarticle)
-            output['metaData']= getMetadata(htmlfile)
-            output['abstract'] = getAbstract(htmlarticle)
+                htmlfile = BeautifulSoup(file, 'html.parser')
+                output = {}
+                htmlarticle = htmlfile.article
+                output['title'] = getTitel(htmlarticle)
+                output['metaData']= getMetadata(htmlfile,categoryFolder,source)
+                output['abstract'] = getAbstract(htmlarticle)
 
-            name = path.splitext(basename(file.name))[0]
-            file = open(join(outputdirectory, name + '.json'), 'w')
-            json.dump(output, file)
-            file.close()
+                name = path.splitext(basename(file.name))[0]
+                file = open(join(outputdirectory, name + '.json'), 'w')
+                json.dump(output, file)
+                file.close()
+                test+=1
 
 def readJsonFiles():
     outputdirectory = 'output'
@@ -50,14 +57,17 @@ def getallReferences(htmlArticle):
     pass
 
 def getKeywords(htmlfile):
+    #Todo unicode Zeichen!
     print("keywords")
-    '''for div in htmlArticle.findAll('strong'):
+    for div in htmlfile.findAll('strong'):
             if div.text and div.text == "Keywords:":
                 text=div.text
                 keywordsArray = div.parent.text.replace(text,"").strip()
+                keywords=keywordsArray.split(";")
+                keywords= [keyword.strip(' ') for keyword in keywords]
                 break
-    return keywordsArray.split(";")'''
-    keywords=htmlfile.find("meta", {"name": "keywords"})['content']
+            else:
+                keywords="no Keywords"
     print(keywords)
     return keywords
 
@@ -68,6 +78,7 @@ def getYear(htmlfile):
     return int(year)
 
 def getAbstract(htmlArticle):
+    #todo nummerierung hinzufügen prüfen, textabschnitte auch mit links und umbrüche
     print("Abstract")
     for div in htmlArticle.findAll('div'):
         if div.find('h3'):
@@ -75,31 +86,37 @@ def getAbstract(htmlArticle):
             if container.text and container.text=="Abstract":
                 #print("Abstract found!!")
                 break
-    abstract=div.find('p').find('p')
-
-    print(len(abstract.findAll('br')))
-    if abstract.find('strong'):
-        list=[]
-        #list.append({'titel': 'no Titel', 'text': abstract.next_sibling})
-        for section in abstract.findAll('strong'):
-            #print(section)
-            #print(section.next_sibling)
-            list.append({'titel': section.text,'text':section.next_sibling})
-    elif abstract.find('br'):
-        list = []
-        #print(abstract.text.splitlines())
-        for section in abstract.text.splitlines():
-            #print(section)
-            list.append({'title':'no Titel','text':section})
+    abstract = div.find('p').find('p')
+    if abstract:
+        #Absätze mit überschriften
+        if abstract.find('strong'):
+            list=[]
+            #list.append({'titel': 'no Titel', 'text': abstract.next_sibling})
+            for index,section in enumerate(abstract.findAll('strong')):
+                #print(section)
+                #print(section.next_sibling)
+                list.append({'titel': section.text,'text':section.next_sibling,'index':index})
+        #Absätze ohne überschriften
+        elif abstract.find('br'):
+            list = []
+            #print(abstract.text.splitlines())
+            for index,section in enumerate(abstract.text.splitlines()):
+                #print(section)
+                list.append({'title':'no Titel','text':section,'index':index})
+        #ohne Absatz
+        else:
+            list = {'title': 'no Titel', 'text': abstract.text}
+        print(list)
     else:
-        list = {'title': 'no Titel', 'text': abstract.text}
-    print(list)
+        list = {'title': 'no Titel', 'text': 'no Abstract'}
     return list
 
-def getMetadata(htmlfile):
+def getMetadata(htmlfile,category,source):
     output={}
     output['keywords']=getKeywords(htmlfile)
     output['yearOfArticle']=getYear(htmlfile)
+    output['category']=category
+    output['source']=source
     return output
 
 def getAuthors(htmlArticle):
@@ -141,5 +158,5 @@ def getInnerSection(htmlArticle):
     #search if inner section --> getSelection(htmlArticle)
     pass
 
-#parseHTML()
+parseHTML()
 #readJsonFiles()

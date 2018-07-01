@@ -41,19 +41,17 @@ def savePaper(paperlistlink,categoryName):
     for paperEntry in paperlist.findAll('div',{'class':"row"}):
         for link in paperEntry.findAll('a'):
             if link.text=="Peer-reviewed Full Article":
-                global counter
                 print('Article link found:'+link['href'])
+                global outpath
                 r = requests.get(link['href'])
-                #paperlink split by /
-                if not os.path.exists('crawlerHTMLTest/'+categoryName):
-                    os.makedirs('crawlerHTMLTest/'+categoryName)
+                fullpath=os.path.join(outpath,categoryName)
+                if not os.path.exists(fullpath):
+                    os.makedirs(fullpath)
                 name=link['href'].split('/')[len(link['href'].split('/'))-1]
-                #paperfehlerausbessern
-                file=open('crawlerHTMLTest/'+categoryName+'/'+name, 'w')
-                file.write(r.text)
+                file=open(os.path.join(fullpath,name), 'w')
+                validHTML=resolveHTMLError(r.text)
+                file.write(validHTML)
                 file.close()
-                counter+=1
-
 
 def runCrawler():
     r = requests.get('https://www.omicsonline.org')
@@ -64,5 +62,11 @@ def runCrawler():
                 print('category: '+category['title'])
                 getJournalsFromCategoriesPage(category['href'],category['title'])
 
-counter=0
+def resolveHTMLError(invalidHTML):
+    validHTML = invalidHTML.replace('</dt>\n</dl>','</div>')
+    return validHTML
+
+source='omics'
+outdir='corpusRawHTML'
+outpath=os.path.join(outdir, source)
 runCrawler()
