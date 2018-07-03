@@ -4,6 +4,7 @@ from os import listdir,path
 from os.path import isfile, join,basename
 
 
+
 def parseHTML():
     htmlfilesdirectory = 'corpusRawHTML'
     outputdirectory = 'output'
@@ -54,7 +55,20 @@ def getTitel(htmlArticle):
         return 'no title found'
 
 def getallReferences(htmlArticle):
-    pass
+    references = {"count": 0, "referencesList": []}
+    referencesElement = htmlArticle.find_all("li", id="Reference_Titile_Link")  # .next_element
+    print()
+    print(referencesElement)
+    print()
+    if (referencesElement):
+        for reference in referencesElement:
+            year = "(" + str(reference.contents[1].split('('))
+            references["count"] += 1
+            referenceData ={"referenceIndex": reference.a['id'], "referenceName": reference.contents[-1].string, "referenceAuthor": reference.contents[1], "referenceYear": year}
+            references["referencesList"] = referenceData
+
+    return references
+
 
 def getKeywords(htmlfile):
     #Todo unicode Zeichen!
@@ -120,8 +134,38 @@ def getMetadata(htmlfile,category,source):
     return output
 
 def getAuthors(htmlArticle):
-    pass
+    authorsOutput = {'count': None, 'authorList': []}
+    authorListHTML = htmlArticle.dl.dt.find_all('a')
 
+    index = 0
+    for authorEl in authorListHTML:
+        author = {}
+        if authorEl.has_attr('title'):
+            author['authorName'] = authorEl['title'].strip()
+            author['authorIndex'] = index = index + 1
+            if authorEl.next_element.next_element.find('a') != -1 and authorEl.next_sibling and str(authorEl.next_sibling.find('a').contents[0]) != '*':
+                universityIndex = authorEl.next_element.next_element.a.string
+                university = htmlArticle.dl.find('dd', id="a" + universityIndex)
+                universityCountry = str(university.contents[-1]).split(',')[-1].strip()
+                if university.find('a', title=True):
+                    universityName = str(university.find('a', href=True)['title'])
+                else:
+                    universityName = str(university.contents[-1].split(',')[0] + ", " + str(university.contents[-1].split(',')[1]))
+            # All authors are from the same university therefore no numbers
+            else:
+                university = htmlArticle.dl.find('dd', id="a1")
+                universityCountry = (str(university.contents[-1]))
+                if university.find('a', title=True):
+                    universityName = str(university.find('a', href=True)['title'])
+                else:
+                    universityName = str(university.contents[-2].string)
+
+            author['university'] = {"universityName": universityName, "universityCountry": universityCountry}
+            authorsOutput['authorList'].append(author)
+            authorsOutput['count'] = index
+
+    print(authorsOutput)
+    return authorsOutput
 
 
 def getSelection(htmlArticle):
@@ -155,7 +199,7 @@ def SelectionFormeln(htmlArticle):
     pass
 
 def getInnerSection(htmlArticle):
-    #search if inner section --> getSelection(htmlArticle)
+    # search if inner section --> getSelection(htmlArticle)
     pass
 
 parseHTML()
