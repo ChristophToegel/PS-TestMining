@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import json
+from bs4 import Tag
 from os import listdir,path
 from os.path import isfile, join,basename
 
@@ -30,8 +31,8 @@ def parseHTML():
                 output['abstract'] = getAbstract(htmlarticle)
 
                 name = path.splitext(basename(file.name))[0]
-                file = open(join(outputdirectory, name + '.json'), 'w')
-                json.dump(output, file)
+                file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
+                json.dump(output, file,ensure_ascii=False)
                 file.close()
                 test+=1
 
@@ -71,8 +72,8 @@ def getallReferences(htmlArticle):
 
 
 def getKeywords(htmlfile):
-    #Todo unicode Zeichen!
     print("keywords")
+    keywords=[]
     for div in htmlfile.findAll('strong'):
             if div.text and div.text == "Keywords:":
                 text=div.text
@@ -91,38 +92,66 @@ def getYear(htmlfile):
     print(year)
     return int(year)
 
+def getAbstractText(abstract):
+    result = []
+    text = ""
+    titel = ""
+    #print(data.text.splitlines())
+    for tag in abstract.findAll():
+        #print(tag.name)
+        if tag.name=="strong":
+            if titel == "" and tag.text!=":":
+                titel=tag.text
+                text=tag.next_sibling
+                #print(tag.next_sibling)
+            elif tag.text!=":":
+                #print(tag.text)
+                titel=titel.strip().replace(":","")
+                text=text.strip()
+                result.append({"title":titel,"text":text,"depth":1})
+                #print('section: '+ "title:"+ titel+"text: "+text)
+                titel=tag.text
+                text=tag.next_sibling
+            else:
+                text = tag.next_sibling
+        elif not (tag.name == "br" or tag.name =="p"):
+            #print("sgtrzjtukziluikhjg")
+            #print(tag.name)
+            if tag.text and tag.next_sibling:
+                text=text+tag.text
+            if tag.next_sibling:
+                text = text + tag.next_sibling
+    result.append({"title": titel, "text": text, "depth": 1})
+    return result
+
 def getAbstract(htmlArticle):
-    #todo nummerierung hinzufügen prüfen, textabschnitte auch mit links und umbrüche
+    #find abstract
     print("Abstract")
     for div in htmlArticle.findAll('div'):
         if div.find('h3'):
             container=div.find('h3')
             if container.text and container.text=="Abstract":
-                #print("Abstract found!!")
                 break
     abstract = div.find('p').find('p')
+
     if abstract:
         #Absätze mit überschriften
         if abstract.find('strong'):
             list=[]
-            #list.append({'titel': 'no Titel', 'text': abstract.next_sibling})
-            for index,section in enumerate(abstract.findAll('strong')):
-                #print(section)
-                #print(section.next_sibling)
-                list.append({'titel': section.text,'text':section.next_sibling,'index':index})
+            list = getAbstractText(abstract)
         #Absätze ohne überschriften
         elif abstract.find('br'):
             list = []
             #print(abstract.text.splitlines())
             for index,section in enumerate(abstract.text.splitlines()):
                 #print(section)
-                list.append({'title':'no Titel','text':section,'index':index})
+                list.append({'title':'<no Title>','text':section,'index':index})
         #ohne Absatz
         else:
-            list = {'title': 'no Titel', 'text': abstract.text}
-        print(list)
+            list = {'title': '<no Title>', 'text': abstract.text}
     else:
-        list = {'title': 'no Titel', 'text': 'no Abstract'}
+        list = {'title': '<no Title>', 'text': '<no Abstract>'}
+    print(list)
     return list
 
 def getMetadata(htmlfile,category,source):
