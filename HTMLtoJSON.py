@@ -33,6 +33,7 @@ def parseHTML():
                 output['abstract'] = getAbstract(htmlarticle)
                 output['authors'] = getAuthors(htmlarticle)
                 output['references'] = getallReferences(htmlarticle)
+                output['text'] = getSelectionText(htmlfile)
 
                 name = path.splitext(basename(file.name))[0]
                 file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
@@ -64,8 +65,8 @@ def getallReferences(htmlArticle):
     referencesElement = htmlArticle.find_all("li", id="Reference_Titile_Link")  # .next_element
     if (referencesElement):
         for reference in referencesElement:
-            print("referenesElement")
-            print(str(reference.contents[1]))
+            #print("referenesElement")
+            #print(str(reference.contents[1]))
 
             #get year
             matchYear = re.search(r'[(][0-9]{4}[)]', str(reference.contents[1]))
@@ -82,13 +83,13 @@ def getallReferences(htmlArticle):
             referenceData ={"referenceIndex": int(reference.a['id']), "referenceName": str(reference.contents[-1].string), "referenceAuthor": refAuthorName, "referenceYear": refYear}
             references["referencesList"].append(referenceData)
 
-    print("referenes")
-    print (references)
+    #print("referenes")
+    #print (references)
     return references
 
 
 def getKeywords(htmlfile):
-    print("keywords")
+    #print("keywords")
     keywords=[]
     for div in htmlfile.findAll('strong'):
             if div.text and div.text == "Keywords:":
@@ -99,13 +100,13 @@ def getKeywords(htmlfile):
                 break
             else:
                 keywords="no Keywords"
-    print(keywords)
+    #print(keywords)
     return keywords
 
 def getYear(htmlfile):
-    print('year')
+    #print('year')
     year=htmlfile.find("meta", {"name": "citation_year"})['content']
-    print(year)
+    #print(year)
     return int(year)
 
 def getAbstractText(abstract):
@@ -142,7 +143,7 @@ def getAbstractText(abstract):
 
 def getAbstract(htmlArticle):
     #find abstract
-    print("Abstract")
+    #print("Abstract")
     for div in htmlArticle.findAll('div'):
         if div.find('h3'):
             container=div.find('h3')
@@ -167,7 +168,7 @@ def getAbstract(htmlArticle):
             list = {'title': '<no Title>', 'text': abstract.text}
     else:
         list = {'title': '<no Title>', 'text': '<no Abstract>'}
-    print(list)
+    #print(list)
     return list
 
 def getMetadata(htmlfile,category,source):
@@ -189,8 +190,8 @@ def getAuthors(htmlArticle):
             author['authorName'] = authorEl['title'].strip()
             author['authorIndex'] = index = index + 1
 
-            print("finding")
-            print(authorEl.next_element.next_element.find('a'))
+            #print("finding")
+            #print(authorEl.next_element.next_element.find('a'))
 
             if not (authorEl.next_element.next_element.find('a') != None or authorEl.next_element.next_element.find('a') != -1) and authorEl.next_sibling and str(authorEl.next_element.next_element.find('a').contents[0]) != '*':
                 universityIndex = authorEl.next_element.next_element.a.string
@@ -215,43 +216,64 @@ def getAuthors(htmlArticle):
             authorsOutput['authorList'].append(author)
             authorsOutput['count'] = index
 
-    print(authorsOutput)
+    #print(authorsOutput)
     return authorsOutput
 
 
-def getSelection(htmlArticle):
-    getInnerSection(htmlArticle)
-    SelectionImages(htmlArticle)
-    SelectionTables(htmlArticle)
-    SelectionFormeln(htmlArticle)
+def getSelectionText(htmlArticle):
+    h4array=[]
+    title=""
+    text=""
+    for section in htmlArticle.findAll("h4"):
+        #neuerh4 gefunden --> speichern
+        if section.text=="References":
+            continue
+        if title!="" and text!="":
+            dataImages=getImages(section.findNext())
+            dataTabels=getTables(section.findNext())
+            dataFormula=getFormula(section.findNext())
+            h4array.append({"titel": title, "text": text,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
+            print('save h4section')
+        print("titel:" + section.text)
+        subsection = []
+        title = section.text
+        text = ""
+        innertitle = ""
+        innertext = ""
+        subsectionfound=False
 
-    getSelectionTitle(htmlArticle)
-    getSelectionText(htmlArticle)
-    getNumSelectionReferences(htmlArticle)
-    pass
+        #alle untertags bis zum nächsten h4 <div class="text-justify">....</div>
+        #<div class="table-responsive"> to get table  <div class="card card-block card-header mb-2"> bilder
+        print(section.findNext())
+        for element in section.findNext():
+            if element.name == 'p' and not element.find("strong"):
+                #print("p ohne strong")
+                #print(element)
+                if subsectionfound:
+                    innertext+=element.get_text()
+                else:
+                    text=text+element.get_text()
+                #h4array.append({"titel": title, "text": element.get_text()})
+            if element.find("strong") and not element.find("strong")==-1:
+                #print("test")
+                #print(element.find("strong"))
+                subsectionfound=True
+                if innertitle!="" and innertext!="":
+                    subsection.append({"titel": innertext, "text": innertext, 'subsection':[]})
+                innertitle=element.find("strong").text
+                innertext=""
 
-def getSelectionTitle(htmlSelection):
-    pass
+    return h4array
 
-def getSelectionText(htmlSelection):
-    pass
+def getTables(section):
+    return ""
 
+def getImages(section):
+    return ""
 
-def getNumSelectionReferences(htmlArticle):
-    pass
+def getFormula(section):
+    return""
 
-def SelectionImages(htmlArticle):
-    pass
-
-def SelectionTables(htmlArticle):
-    pass
-
-def SelectionFormeln(htmlArticle):
-    pass
-
-def getInnerSection(htmlArticle):
-    # search if inner section --> getSelection(htmlArticle)
-    pass
 
 parseHTML()
 #readJsonFiles()
