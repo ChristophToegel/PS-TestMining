@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
 import json
+import re
 from bs4 import Tag
 from os import listdir,path
 from os.path import isfile, join,basename
 
+EMPTYJSONTAG = "<<empty>>"
 
 
 def parseHTML():
@@ -29,6 +31,8 @@ def parseHTML():
                 output['title'] = getTitel(htmlarticle)
                 output['metaData']= getMetadata(htmlfile,categoryFolder,source)
                 output['abstract'] = getAbstract(htmlarticle)
+                output['authors'] = getAuthors(htmlarticle)
+                output['references'] = getallReferences(htmlarticle)
 
                 name = path.splitext(basename(file.name))[0]
                 file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
@@ -58,16 +62,28 @@ def getTitel(htmlArticle):
 def getallReferences(htmlArticle):
     references = {"count": 0, "referencesList": []}
     referencesElement = htmlArticle.find_all("li", id="Reference_Titile_Link")  # .next_element
-    print()
-    print(referencesElement)
-    print()
     if (referencesElement):
         for reference in referencesElement:
-            year = "(" + str(reference.contents[1].split('('))
-            references["count"] += 1
-            referenceData ={"referenceIndex": reference.a['id'], "referenceName": reference.contents[-1].string, "referenceAuthor": reference.contents[1], "referenceYear": year}
-            references["referencesList"] = referenceData
+            print("referenesElement")
+            print(str(reference.contents[1]))
 
+            #get year
+            matchYear = re.search(r'[(][0-9]{4}[)]', str(reference.contents[1]))
+            refYear = EMPTYJSONTAG
+            if matchYear:
+                refYear = int(str(matchYear.group())[1:-1])
+
+            #get author
+            refAuthorName = EMPTYJSONTAG
+            if "<" not in str(reference.contents[1]):
+                refAuthorName = str(reference.contents[1])
+
+            references["count"] += 1
+            referenceData ={"referenceIndex": int(reference.a['id']), "referenceName": str(reference.contents[-1].string), "referenceAuthor": refAuthorName, "referenceYear": refYear}
+            references["referencesList"].append(referenceData)
+
+    print("referenes")
+    print (references)
     return references
 
 
@@ -172,7 +188,11 @@ def getAuthors(htmlArticle):
         if authorEl.has_attr('title'):
             author['authorName'] = authorEl['title'].strip()
             author['authorIndex'] = index = index + 1
-            if authorEl.next_element.next_element.find('a') != -1 and authorEl.next_sibling and str(authorEl.next_sibling.find('a').contents[0]) != '*':
+
+            print("finding")
+            print(authorEl.next_element.next_element.find('a'))
+
+            if not (authorEl.next_element.next_element.find('a') != None or authorEl.next_element.next_element.find('a') != -1) and authorEl.next_sibling and str(authorEl.next_element.next_element.find('a').contents[0]) != '*':
                 universityIndex = authorEl.next_element.next_element.a.string
                 university = htmlArticle.dl.find('dd', id="a" + universityIndex)
                 universityCountry = str(university.contents[-1]).split(',')[-1].strip()
@@ -184,10 +204,12 @@ def getAuthors(htmlArticle):
             else:
                 university = htmlArticle.dl.find('dd', id="a1")
                 universityCountry = (str(university.contents[-1]))
+                print("university")
+                print(university.contents)
                 if university.find('a', title=True):
                     universityName = str(university.find('a', href=True)['title'])
                 else:
-                    universityName = str(university.contents[-2].string)
+                    universityName = str(university.contents[0]).split(',')[0]
 
             author['university'] = {"universityName": universityName, "universityCountry": universityCountry}
             authorsOutput['authorList'].append(author)
