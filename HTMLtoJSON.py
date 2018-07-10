@@ -203,7 +203,7 @@ def getAuthors(htmlArticle):
             # All authors are from the same university therefore no numbers
             else:
                 university = htmlArticle.dl.find('dd', id="a1")
-                universityCountry = (str(university.contents[-1]))
+                universityCountry = str(university.contents[-1]).replace(",","").strip()
                 print("university")
                 print(university.contents)
                 if university.find('a', title=True):
