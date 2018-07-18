@@ -162,12 +162,12 @@ def getAbstract(htmlArticle):
             #print(abstract.text.splitlines())
             for index,section in enumerate(abstract.text.splitlines()):
                 #print(section)
-                list.append({'title':'<no Title>','text':section,'index':index})
+                list.append({'title':EMPTYJSONTAG,'text':section,'index':index})
         #ohne Absatz
         else:
-            list = {'title': '<no Title>', 'text': abstract.text}
+            list = {'title': EMPTYJSONTAG, 'text': abstract.text}
     else:
-        list = {'title': '<no Title>', 'text': '<no Abstract>'}
+        list = {'title': EMPTYJSONTAG, 'text': EMPTYJSONTAG}
     #print(list)
     return list
 
@@ -205,8 +205,8 @@ def getAuthors(htmlArticle):
             else:
                 university = htmlArticle.dl.find('dd', id="a1")
                 universityCountry = str(university.contents[-1]).replace(",","").strip()
-                print("university")
-                print(university.contents)
+                #print("university")
+                #print(university.contents)
                 if university.find('a', title=True):
                     universityName = str(university.find('a', href=True)['title'])
                 else:
@@ -222,6 +222,7 @@ def getAuthors(htmlArticle):
 
 def getSelectionText(htmlArticle):
     h4array=[]
+    subsection=[]
     title=""
     text=""
     for section in htmlArticle.findAll("h4"):
@@ -232,7 +233,7 @@ def getSelectionText(htmlArticle):
             dataImages=getImages(section.findNext())
             dataTabels=getTables(section.findNext())
             dataFormula=getFormula(section.findNext())
-            h4array.append({"titel": title, "text": text,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
+            h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
             print('save h4section')
         print("titel:" + section.text)
         subsection = []
@@ -245,23 +246,34 @@ def getSelectionText(htmlArticle):
         #alle untertags bis zum nächsten h4 <div class="text-justify">....</div>
         #<div class="table-responsive"> to get table  <div class="card card-block card-header mb-2"> bilder
         print(section.findNext())
+        #print(section.findAll('p'))
         for element in section.findNext():
+            print("element")
+            print(element)
             if element.name == 'p' and not element.find("strong"):
-                #print("p ohne strong")
+                print("p ohne strong")
                 #print(element)
                 if subsectionfound:
                     innertext+=element.get_text()
                 else:
                     text=text+element.get_text()
                 #h4array.append({"titel": title, "text": element.get_text()})
-            if element.find("strong") and not element.find("strong")==-1:
-                #print("test")
-                #print(element.find("strong"))
-                subsectionfound=True
-                if innertitle!="" and innertext!="":
-                    subsection.append({"titel": innertext, "text": innertext, 'subsection':[]})
-                innertitle=element.find("strong").text
-                innertext=""
+
+            elif element.name == 'p' and element.find("strong") and not element.find("strong")==-1:
+                # none wenns vorkommt -1 wenn nicht
+                if element.contents[0].find("strong")!=-1 :
+                    print("unterüberschrift found")
+                    subsectionfound = True
+                    if innertitle != "" and innertext != "":
+                        subsection.append({"title": innertitle, "text": innertext, 'subsubsection': []})
+                    innertitle = element.find("strong").text
+                    innertext = ""
+                else:
+                    #if subsectionfound:
+                    innertext += element.get_text()
+                    #else:
+                    #    text = text + element.get_text()
+                    print("tabelle oder bild referenziert --> hinzufügen")
 
     return h4array
 
