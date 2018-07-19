@@ -109,6 +109,12 @@ def getYear(htmlfile):
     #print(year)
     return int(year)
 
+def getImpactFactor(htmlfile):
+    impactFactor=htmlfile.find('meta' ,{'name':'journal_impact_factor'})['content']
+    if impactFactor.strip()=="-" or impactFactor.strip()=="" or impactFactor==None:
+        impactFactor=EMPTYJSONTAG
+    return impactFactor
+
 def getAbstractText(abstract):
     result = []
     text = ""
@@ -175,6 +181,7 @@ def getMetadata(htmlfile,category,source):
     output={}
     output['keywords']=getKeywords(htmlfile)
     output['yearOfArticle']=getYear(htmlfile)
+    output['impactFactor']=getImpactFactor(htmlfile)
     output['category']=category
     output['source']=source
     return output
@@ -233,7 +240,7 @@ def getSelectionText(htmlArticle):
             dataImages=getImages(section.findNext())
             dataTabels=getTables(section.findNext())
             dataFormula=getFormula(section.findNext())
-            h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
+            h4array.append({"title": title, "text": text,'depth':1,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
             print('save h4section')
         print("titel:" + section.text)
         subsection = []
@@ -262,19 +269,26 @@ def getSelectionText(htmlArticle):
             elif element.name == 'p' and element.find("strong") and not element.find("strong")==-1:
                 # none wenns vorkommt -1 wenn nicht
                 if element.contents[0].find("strong")!=-1 :
-                    print("unterüberschrift found")
-                    subsectionfound = True
-                    if innertitle != "" and innertext != "":
-                        subsection.append({"title": innertitle, "text": innertext, 'subsubsection': []})
-                    innertitle = element.find("strong").text
-                    innertext = ""
-                else:
-                    #if subsectionfound:
-                    innertext += element.get_text()
-                    #else:
-                    #    text = text + element.get_text()
-                    print("tabelle oder bild referenziert --> hinzufügen")
+                    if "Table" not in element.find("strong").text and "Frigure" not in element.find("strong").text:
+                        print("unterüberschrift found")
+                        subsectionfound = True
+                        if innertitle != "" and innertext != "":
+                            subsection.append({"title": innertitle, "text": innertext, 'depth':2,'subsection': []})
+                        innertitle = element.find("strong").text
+                        innertext = ""
+                    else:
+                        innertext += element.get_text()
 
+                else:
+                    innertext += element.get_text()
+        if innertitle!="" or innertext!="":
+            subsection.append({"title": innertitle, "text": innertext, 'depth': 2, 'subsection': []})
+
+    dataImages = getImages(section.findNext())
+    dataTabels = getTables(section.findNext())
+    dataFormula = getFormula(section.findNext())
+    h4array.append({"title": title, "text": text, 'depth': 1, 'subsection': subsection, 'tables': dataTabels,
+                    'pictures': dataImages, 'formula': dataFormula})
     return h4array
 
 def getTables(section):
