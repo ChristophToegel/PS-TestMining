@@ -35,6 +35,9 @@ def parseHTML():
                 output['references'] = getallReferences(htmlarticle)
                 output['text'] = getSelectionText(htmlfile)
 
+                print("output")
+                print(output)
+
                 name = path.splitext(basename(file.name))[0]
                 file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
                 json.dump(output, file,ensure_ascii=False)
@@ -102,6 +105,28 @@ def getKeywords(htmlfile):
                 keywords="no Keywords"
     #print(keywords)
     return keywords
+
+
+def getJournalTitle (htmlfile):
+    journalTitle = EMPTYJSONTAG
+    titleEl = htmlfile.find("meta" ,{"name":"citation_journal_title"})
+    if titleEl != None and titleEl != -1:
+       journalTitle = titleEl['content']
+
+    return journalTitle
+
+
+def getPaperType (htmlArticle):
+    paperType = EMPTYJSONTAG
+
+    container = htmlArticle.find("div", {"class": "col-xs-12 col-sm-9"})
+    if container != -1 and container != None:
+        paperType = str(container.ul.li.contents[0]).strip()
+
+
+    return paperType
+
+
 
 def getYear(htmlfile):
     #print('year')
@@ -175,8 +200,10 @@ def getMetadata(htmlfile,category,source):
     output={}
     output['keywords']=getKeywords(htmlfile)
     output['yearOfArticle']=getYear(htmlfile)
+    output['journaltitle']=getJournalTitle(htmlfile)
     output['category']=category
     output['source']=source
+    output['paperType'] = getPaperType(htmlfile)
     return output
 
 def getAuthors(htmlArticle):
@@ -197,6 +224,10 @@ def getAuthors(htmlArticle):
                 universityIndex = authorEl.next_element.next_element.a.string
                 university = htmlArticle.dl.find('dd', id="a" + universityIndex)
                 universityCountry = str(university.contents[-1]).split(',')[-1].strip()
+
+                print("XXCountry")
+                print(universityCountry)
+
                 if university.find('a', title=True):
                     universityName = str(university.find('a', href=True)['title'])
                 else:
@@ -231,9 +262,9 @@ def getSelectionText(htmlArticle):
             continue
         if title!="" and text!="":
             dataImages=getImages(section.findNext())
-            dataTabels=getTables(section.findNext())
-            dataFormula=getFormula(section.findNext())
-            h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTabels,'pictures':dataImages,'formula':dataFormula})
+            dataFormula= ""#getFormula(section.findNext())
+            dataTables = getTables(section.findNext())
+            h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTables,'pictures':dataImages,'formula':dataFormula})
             print('save h4section')
         print("titel:" + section.text)
         subsection = []
@@ -275,16 +306,82 @@ def getSelectionText(htmlArticle):
                     #    text = text + element.get_text()
                     print("tabelle oder bild referenziert --> hinzufügen")
 
+
     return h4array
 
+
 def getTables(section):
-    return ""
+    print("tablesection")
+
+    sectionTableData = {"count": 0, "tablesList": []}
+    for element in section.findNext():
+        print("Hällo")
+        #class ="card card-block card-header mb-2
+        print(element)
+        if element.name == "div" and "table-responsive" in element['class']:
+
+            print("tableStart")
+
+            sectionTableData['count'] += 1
+            description = EMPTYJSONTAG
+
+            print(element.find("tr").contents)
+
+            rows = len(element.find_all("tr"))
+
+            colsArray = element.find("tr").contents
+
+            while '\n' in colsArray: colsArray.remove('\n')
+            cols = len(colsArray)
+
+            print("sauber")
+            print(colsArray)
+
+            print("näcshtes")
+            print(element.findNext())
+            print("näcshtes ENDE")
+
+            tableData = {"index": sectionTableData['count'], "tableRowDim": rows, "tableColDim": cols, "tableDescription": description}
+            sectionTableData['tablesList'].append(tableData)
+
+            print(sectionTableData)
+            print("table gefunden")
+            print("tablesection ENDE")
+
+    return sectionTableData
 
 def getImages(section):
-    return ""
+    print("picturesection")
+
+    sectionPictureData = {"count": 0, "picturesList": []}
+    for element in section.findNext():
+        print(element)
+        if element.name == "div" and "card" in element['class']:
+            print("pictureStart")
+
+            print(element)
+
+            sectionPictureData['count'] += 1
+            description = EMPTYJSONTAG
+
+            print(element.find("tr").contents)
+
+            print("näcshtes")
+            print(element.findNext())
+            print("näcshtes ENDE")
+
+            pictureData = {"index": sectionPictureData['count'], "pictureDescription": description}
+            sectionPictureData['picturesList'].append(pictureData)
+
+            print(sectionPictureData)
+            print("picture gefunden")
+            print("picturesection ENDE")
+    return sectionPictureData
 
 def getFormula(section):
     return""
+
+
 
 
 parseHTML()
