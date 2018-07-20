@@ -15,6 +15,19 @@ Die Anwendung erfordert Python3 und eine lokale mongoDB Installation.
 ######MongoDB installation:
 [Zur Installationsanleitung von MongDB](https://docs.mongodb.com/manual/administration/install-community/)
 
+In Pycharm 
+* mongoengine
+* django
+über den Package-Manager installieren
+
+MongoDB außerhalb installieren
+
+Dann eine neue RunConfiguration "djangoServer" über + hinzufügen. Als "Environment Variables" ->
+Name: "DJANGO_SETTINGS_MODULE" 
+Wert: "DjangoTextMining.settings"
+hinzufügen
+
+PyCharm fragt beim ersten Run nach einem Root-Folder. Dieser ist der gesamte Ordner in dem die 3 django-Ordner enthalten sind.
 
 #### Start der Anwendung: 
 Schritt1: MongoDB mit dem Befehl "mongod" im Terminal starten \
