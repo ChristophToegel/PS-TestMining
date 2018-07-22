@@ -61,7 +61,7 @@ def getTitel(htmlArticle):
     if title:
         return title
     else:
-        return 'no title found'
+        return EMPTYJSONTAG
 
 def getallReferences(htmlArticle):
     references = {"count": 0, "referencesList": []}
@@ -102,7 +102,7 @@ def getKeywords(htmlfile):
                 keywords= [keyword.strip(' ') for keyword in keywords]
                 break
             else:
-                keywords="no Keywords"
+                keywords=EMPTYJSONTAG
     #print(keywords)
     return keywords
 
@@ -307,7 +307,7 @@ def getSelectionText(htmlArticle):
                             subsection.append({"title": innertitle, "text": innertext, 'depth':2,'subsection': []})
                         innertitle = element.find("strong").text
                         innertext = ""
-                    else:
+                    elif subsectionfound:
                         innertext += element.get_text()
 
                 else:
