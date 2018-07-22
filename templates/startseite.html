@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block title %}Startseite{% endblock %}
+
+{% block body %}
+    <h3> <span class="glyphicon glyphicon-alert"></span>Diese Seite befindet sich noch im Aufbau</h3>
+    {% if info %}
+        <p> {{ info }}</p>
+    {% endif %}
+{% endblock %}

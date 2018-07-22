@@ -1,0 +1,25 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {% block title %} TextMining {% endblock %} </title>
+    {# Load the tag library #}
+    {% load bootstrap4 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <link href='{% static "css/main.css" %}' rel="stylesheet">
+
+</head>
+<body>
+<div class="container-fluid">
+    <h1 class="text-center">TextMinig <span class="badge badge-secondary">New</span></h1>
+        <hr/>
+    {% block body %}
+
+    {% endblock %}
+</div>
+</body>
+</html>

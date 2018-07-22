@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Paper</title>
-</head>
-<body>
+{% extends 'index.html' %}
+{% block title %}Liste der Paper{% endblock %}
 
-<h1>Liste vorhandener Paper</h1>
-{% for paper in papers %}
-<h3>{{ paper.title }}</h3>
-    <h5>Autoren</h5>
-{% for author in paper.authors.authorList %}
-    <h5>{{ author.authorName }}</h5>
-{% endfor %}
-    {{ paper.text }}
-{% endfor %}
+{% block body %}
+    {% if paper %}
+    <p>{{ paper }} hinzugefügt. Titel={{ paper.title }}</p>
+    {% endif %}
 
-</body>
-</html>
+{% endblock %}

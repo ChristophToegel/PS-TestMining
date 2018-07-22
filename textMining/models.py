@@ -4,7 +4,25 @@ from django.db import models
 from mongoengine import *
 
 #http://docs.mongoengine.org
-connect('test5')
+connect('textmining')
+
+class Tables(Document):
+    count = IntField()
+    tablesList=EmbeddedDocumentListField('Table')
+
+class Table(Document):
+    tableIndex = IntField()
+    tableRowDim = IntField()
+    tableCodDim = IntField()
+    tableDescription = StringField()
+
+class Pictures(Document):
+    count = IntField()
+    picturesList=EmbeddedDocumentListField('Picture')
+
+class Picture(Document):
+    pictureIndex = IntField()
+    pictureDescription = StringField()
 
 class Subsection(Document):
     title = StringField()
@@ -15,17 +33,15 @@ class Text(Document):
     title = StringField()
     text = StringField()
     subsection = EmbeddedDocumentListField('Subsection')
-    # TODO nicht string?
-    tables = StringField()
-    pictures = StringField()
-    formula = StringField()
+    tables = EmbeddedDocumentField('Tables')
+    pictures = EmbeddedDocumentField('Pictures')
+    formulas = StringField() #String weil leer und nicht 0
 
 class Reference(Document):
     referenceIndex = IntField()
     referenceName = StringField()
     referenceAuthor = StringField()
-    referenceYear = IntField()
-
+    referenceYear = StringField()
 
 class References(Document):
     count = IntField()
@@ -60,4 +76,4 @@ class Paper(Document):
     abstract = EmbeddedDocumentField('Abstract')
     authors = EmbeddedDocumentField('Authors')
     references = EmbeddedDocumentField('References')
-    text = ListField(EmbeddedDocumentField('Text'))
+    text = EmbeddedDocumentListField('Text')

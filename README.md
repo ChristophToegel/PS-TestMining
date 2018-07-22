@@ -11,6 +11,7 @@ Die Anwendung erfordert Python3 und eine lokale mongoDB Installation.
 * [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/) (sudo pip(3) install bs4)
 * [django](https://www.djangoproject.com) (sudo pip(3) install django) 
 * [mongoengine](http://docs.mongoengine.org) (sudo pip(3) install mongoengine)
+* [django-bootstrap4](http://django-bootstrap4.readthedocs.io/en/latest/index.html) (pip(3) install django-bootstrap4)
 
 ######MongoDB installation:
 [Zur Installationsanleitung von MongDB](https://docs.mongodb.com/manual/administration/install-community/)

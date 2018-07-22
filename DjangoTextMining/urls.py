@@ -20,6 +20,6 @@ from textMining import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('textMining', views.showStartPage),
-    path('textMining/testConn/', views.testconn),
+    path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/testReadPaper/', views.readJsonFiles),
 ]
