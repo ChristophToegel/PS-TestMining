@@ -5,7 +5,7 @@ Frei zugängliche wissenschaftliche Textsorten verschiedener Fachbereiche solle 
 
 Die Anwendung erfordert Python3 und eine lokale mongoDB Installation.
 
-######verwendete Bibliotheken:
+###verwendete Bibliotheken:
 
 * [requests](http://docs.python-requests.org/en/master/) (sudo pip(3) install requests)
 * [BeautifulSoup](https://beautiful-soup-4.readthedocs.io/en/latest/) (sudo pip(3) install bs4)
@@ -13,7 +13,7 @@ Die Anwendung erfordert Python3 und eine lokale mongoDB Installation.
 * [mongoengine](http://docs.mongoengine.org) (sudo pip(3) install mongoengine)
 * [django-bootstrap4](http://django-bootstrap4.readthedocs.io/en/latest/index.html) (pip(3) install django-bootstrap4)
 
-######MongoDB installation:
+###MongoDB installation:
 [Zur Installationsanleitung von MongDB](https://docs.mongodb.com/manual/administration/install-community/)
 
 In Pycharm 
