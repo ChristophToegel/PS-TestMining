@@ -22,4 +22,6 @@ urlpatterns = [
     path('textMining', views.showStartPage),
     path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/testReadPaper/', views.readJsonFiles),
+
+    path('textMining/calculateFreqWords/', views.calculateFreqWords),
 ]

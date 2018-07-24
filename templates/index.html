@@ -12,11 +12,14 @@
     {% bootstrap_javascript jquery='full' %}
     <link href='{% static "css/main.css" %}' rel="stylesheet">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <script src="{% static "js/cloud.js" %}"></script>
+
 </head>
 <body>
 <div class="container-fluid">
     <h1 class="text-center">TextMinig <span class="badge badge-secondary">New</span></h1>
-        <hr/>
+    <hr/>
     {% block body %}
 
     {% endblock %}

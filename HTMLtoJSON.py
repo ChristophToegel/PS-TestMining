@@ -102,7 +102,7 @@ def getKeywords(htmlfile):
                 keywords= [keyword.strip(' ') for keyword in keywords]
                 break
             else:
-                keywords=EMPTYJSONTAG
+                keywords=[EMPTYJSONTAG]
     #print(keywords)
     return keywords
 
@@ -193,7 +193,7 @@ def getAbstract(htmlArticle):
             #print(abstract.text.splitlines())
             for index,section in enumerate(abstract.text.splitlines()):
                 #print(section)
-                list.append({'title':EMPTYJSONTAG,'text':section,'index':index})
+                list.append({'title':EMPTYJSONTAG,'text':section,'depth':index})
         #ohne Absatz
         else:
             list = {'title': EMPTYJSONTAG, 'text': abstract.text}

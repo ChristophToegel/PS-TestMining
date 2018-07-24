@@ -19,6 +19,13 @@ def calculateMetriken(request):
     context = {'info': 'metriken werden berechnet'}
     return render(request, 'Startseite.html', context)
 
+def calculateFreqWords(request):
+    corpus1=metriken.calculateWordFrequency(Paper.objects.filter(metaData__category='Food & Nutrition'))
+    #print(corpus1)
+    corpus2 = metriken.calculateWordFrequency(Paper.objects.filter(metaData__category='Mathematics'))
+    #print(corpus2)
+    return render(request, 'freqWords.html', {"corpus1":corpus1,"corpus2":corpus2})
+
 
 def showStartPage(request):
     return render(request, 'Startseite.html')
@@ -52,7 +59,12 @@ def readJsonFiles(request):
                                                     category=paper['metaData']['category'],
                                                     source=paper['metaData']['source'])
             # create Abstract
-            abstract = Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['text'])
+            print("abstract")
+            #TODO manchmal ist der Abstract ein array
+            if isinstance(paper['abstract'], list):
+                abstract = Abstract.objects.create(title=paper['abstract'][0]['title'], text=paper['abstract'][0]['text'])
+            else:
+                abstract = Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['text'])
 
             # create Reference
             arrayReferences = []
@@ -98,7 +110,7 @@ def readJsonFiles(request):
             newpaper = Paper.objects.create(title=paper['title'], metaData=metaDatavalue, authors=authors,
                                             abstract=abstract,
                                             references=references, text=TextArray)
-        onlyOne=True
+        onlyOne=False
     print(newpaper)
     context = {'paper': newpaper}
     return render(request, 'Helloworld.html', context)
