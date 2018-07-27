@@ -123,16 +123,29 @@ def getPaperType (htmlArticle):
     if container != -1 and container != None:
         paperType = str(container.ul.li.contents[0]).strip()
 
-
     return paperType
 
+def getPaperURL (htmlfile):
+    url = EMPTYJSONTAG
+    urlEl = htmlfile.find("link", {"rel":"canonical"})
+    print("urlelement")
+    print(urlEl)
+
+    if urlEl != None and urlEl != -1:
+        url = str(urlEl["href"])
+
+    print("Hier ist die URL")
+    print(url)
+    return url
 
 
 def getYear(htmlfile):
-    #print('year')
-    year=htmlfile.find("meta", {"name": "citation_year"})['content']
-    #print(year)
-    return int(year)
+    year = EMPTYJSONTAG
+    yearEl=htmlfile.find("meta", {"name": "citation_year"})
+    if yearEl != None and yearEl != -1:
+        year = str(yearEl["content"])
+
+    return year
 
 def getImpactFactor(htmlfile):
     impactFactor=htmlfile.find('meta' ,{'name':'journal_impact_factor'})['content']
@@ -210,6 +223,7 @@ def getMetadata(htmlfile,category,source):
     #output['impactFactor'] = getImpactFactor(htmlfile)
     output['category']=category
     output['source']=source
+    output['URL'] = getPaperURL(htmlfile)
     output['paperType'] = getPaperType(htmlfile)
     return output
 
@@ -293,6 +307,7 @@ def getSelectionText(htmlArticle):
         #print(section.findAll('p'))
         for element in section.findNext():
             print("element")
+            print("element1 " + str(element.name))
             print(element)
             if element.name == 'p' and not element.find("strong"):
                 print("p ohne strong")
@@ -332,75 +347,86 @@ def getSelectionText(htmlArticle):
 
 
 def getTables(section):
-    print("tablesection")
-    print(section)
-    print("tablesection ENDE")
     sectionTableData = {"count": 0, "tablesList": []}
-    for element in section.findNext():
-        print("Hällo")
-        print("testo " + str(element.name))
-        if element.name == "div" and "table-responsive" in element['class']:
+    tableListHTML = section.find_all("div", class_="table-responsive")
 
-            print("tableStart")
+    for element in section.find_next():
+        print("element in for")
+        print(element.name)
 
-            sectionTableData['count'] += 1
-            description = EMPTYJSONTAG
+        if "class" in element:
+            print("Klasse vorhanden")
+            print(element)
 
-            print(element.find("tr").contents)
+        print(element)
+        print("Element ende")
 
-            rows = len(element.find_all("tr"))
 
-            colsArray = element.find("tr").contents
+    for table in tableListHTML:
+        sectionTableData['count'] += 1
+        description = EMPTYJSONTAG
 
-            while '\n' in colsArray: colsArray.remove('\n')
-            cols = len(colsArray)
+        rows = len(table.find_all("tr"))
 
-            print("sauber")
-            print(colsArray)
+        colsArray = table.find("tr").contents
 
-            print("näcshtes")
-            print(element.findNext())
-            print("näcshtes ENDE")
+        while '\n' in colsArray:
+            colsArray.remove('\n')
 
-            tableData = {"index": sectionTableData['count'], "tableRowDim": rows, "tableColDim": cols, "tableDescription": description}
-            sectionTableData['tablesList'].append(tableData)
+        cols = len(colsArray)
 
-            print(sectionTableData)
-            print("table gefunden")
-            print("tablesection ENDE")
+        tableData = {"index": sectionTableData['count'], "tableRowDim": rows, "tableColDim": cols, "tableDescription": description}
+        sectionTableData['tablesList'].append(tableData)
 
     return sectionTableData
 
+
+
 def getImages(section):
     print("picturesection")
-
     sectionPictureData = {"count": 0, "picturesList": []}
-    for element in section.findNext():
-        print(element)
-        if element.name == "div" and "card" in element['class']:
-            print("pictureStart")
+    regex = re.compile("<[\/]*[a-z]+>", re.IGNORECASE)
+    pictureListHTML = section.find_all("div", class_="card card-block card-header mb-2")
 
-            print(element)
+    for picture in pictureListHTML:
+        sectionPictureData['count'] += 1
+        description = EMPTYJSONTAG
 
-            sectionPictureData['count'] += 1
-            description = EMPTYJSONTAG
+        descriptionEl = picture.find("div", class_="col-xs-12 col-sm-10 col-md-9")
+        if descriptionEl != None and descriptionEl != -1:
+            description = str(descriptionEl.p)
 
-            print(element.find("tr").contents)
 
-            print("näcshtes")
-            print(element.findNext())
-            print("näcshtes ENDE")
+            while re.search(regex, description) != None:
+                description = regex.sub("", description)
 
-            pictureData = {"index": sectionPictureData['count'], "pictureDescription": description}
-            sectionPictureData['picturesList'].append(pictureData)
+            print("Beschreibung")
+            print(str(description))
 
-            print(sectionPictureData)
-            print("picture gefunden")
-            print("picturesection ENDE")
+
+        pictureData = {"index": sectionPictureData['count'], "pictureDescription": description}
+        sectionPictureData['picturesList'].append(pictureData)
     return sectionPictureData
 
 def getFormula(section):
-    return""
+    print("formula Section")
+    sectionFormulaData = {"count": 0, "formulaList": []}
+
+    formulaListHTML = section.find_all("img")#, class_="equation")
+
+    print("Formelliste")
+    print(formulaListHTML)
+
+
+    for formula in formulaListHTML:
+        sectionFormulaData['count'] += 1
+        sourceLink = EMPTYJSONTAG
+
+        pictureData = {"index": sectionFormulaData['count'], "formulaSource": sourceLink}
+        sectionFormulaData['formulaList'].append(pictureData)
+
+    return sectionFormulaData
+
 
 
 parseHTML()
