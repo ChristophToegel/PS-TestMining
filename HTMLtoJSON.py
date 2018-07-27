@@ -207,7 +207,7 @@ def getMetadata(htmlfile,category,source):
     output['keywords']=getKeywords(htmlfile)
     output['yearOfArticle']=getYear(htmlfile)
     output['journaltitle']=getJournalTitle(htmlfile)
-    output['impactFactor'] = getImpactFactor(htmlfile)
+    #output['impactFactor'] = getImpactFactor(htmlfile)
     output['category']=category
     output['source']=source
     output['paperType'] = getPaperType(htmlfile)
@@ -217,6 +217,9 @@ def getAuthors(htmlArticle):
     authorsOutput = {'count': None, 'authorList': []}
     authorListHTML = htmlArticle.dl.dt.find_all('a')
 
+    print("AuthorlistHTML")
+    print(authorListHTML)
+
     index = 0
     for authorEl in authorListHTML:
         author = {}
@@ -224,10 +227,13 @@ def getAuthors(htmlArticle):
             author['authorName'] = authorEl['title'].strip()
             author['authorIndex'] = index = index + 1
 
-            #print("finding")
-            #print(authorEl.next_element.next_element.find('a'))
+            finding = authorEl.next_element.next_element.find('a')
+            print("finding")
+            print(authorEl)
+            print(finding)
+            print("finding ENDE")
 
-            if not (authorEl.next_element.next_element.find('a') != None or authorEl.next_element.next_element.find('a') != -1) and authorEl.next_sibling and str(authorEl.next_element.next_element.find('a').contents[0]) != '*':
+            if finding != None and (authorEl.next_element.next_element.find('a') != -1) and authorEl.next_sibling and str(finding.contents[0]) != '*':
                 universityIndex = authorEl.next_element.next_element.a.string
                 university = htmlArticle.dl.find('dd', id="a" + universityIndex)
                 universityCountry = str(university.contents[-1]).split(',')[-1].strip()
@@ -327,12 +333,12 @@ def getSelectionText(htmlArticle):
 
 def getTables(section):
     print("tablesection")
-
+    print(section)
+    print("tablesection ENDE")
     sectionTableData = {"count": 0, "tablesList": []}
     for element in section.findNext():
         print("Hällo")
-        #class ="card card-block card-header mb-2
-        print(element)
+        print("testo " + str(element.name))
         if element.name == "div" and "table-responsive" in element['class']:
 
             print("tableStart")
