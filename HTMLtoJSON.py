@@ -163,7 +163,8 @@ def getAbstractText(abstract):
         if tag.name=="strong":
             if titel == "" and tag.text!=":":
                 titel=tag.text
-                text=tag.next_sibling
+                if tag.next_sibling.name != "br":
+                    text=tag.next_sibling
                 #print(tag.next_sibling)
             elif tag.text!=":":
                 #print(tag.text)
@@ -220,7 +221,7 @@ def getMetadata(htmlfile,category,source):
     output['keywords']=getKeywords(htmlfile)
     output['yearOfArticle']=getYear(htmlfile)
     output['journaltitle']=getJournalTitle(htmlfile)
-    #output['impactFactor'] = getImpactFactor(htmlfile)
+    output['impactFactor'] = getImpactFactor(htmlfile)
     output['category']=category
     output['source']=source
     output['URL'] = getPaperURL(htmlfile)
@@ -287,7 +288,7 @@ def getSelectionText(htmlArticle):
         #neuerh4 gefunden --> speichern
         if section.text=="References":
             continue
-        if title!="" and text!="":
+        if title!="": #and text!="":
             dataImages=getImages(section.findNext())
             dataFormula= ""#getFormula(section.findNext())
             dataTables = getTables(section.findNext())
@@ -328,12 +329,18 @@ def getSelectionText(htmlArticle):
                             subsection.append({"title": innertitle, "text": innertext, 'depth':2,'subsection': []})
                         innertitle = element.find("strong").text
                         innertext = ""
-                    elif subsectionfound:
-                        innertext += element.get_text()
+                    else:
+                        if ":" not in element.find("strong").text:
+                            if subsectionfound:
+                                innertext += element.get_text()
+                            else:
+                                text += element.get_text()
 
                 else:
-                    #if subsectionfound:
-                    innertext += element.get_text()
+                    if subsectionfound:
+                        innertext += element.get_text()
+                    else:
+                        text += element.get_text()
         if innertitle!="" or innertext!="":
             subsection.append({"title": innertitle, "text": innertext, 'depth': 2, 'subsection': []})
 
