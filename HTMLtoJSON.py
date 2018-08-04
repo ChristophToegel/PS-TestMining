@@ -42,7 +42,7 @@ def parseHTML():
                 file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
                 json.dump(output, file,ensure_ascii=False)
                 file.close()
-                test+=1
+                #test+=1
 
 def readJsonFiles():
     outputdirectory = 'output'
@@ -72,22 +72,46 @@ def getallReferences(htmlArticle):
             #print(str(reference.contents[1]))
 
             #get year
-            matchYear = re.search(r'[(][0-9]{4}[)]', str(reference.contents[1]))
+            matchYear = re.search(r'[(][0-9]{4}[a-z]?[)]', str(reference))
             refYear = EMPTYJSONTAG
             if matchYear:
-                refYear = int(str(matchYear.group())[1:-1])
+                refYear = str(matchYear.group())[1:-1]
 
             #get author
+
+            print("Das ist Referenz")
+            print(reference)
+
             refAuthorName = EMPTYJSONTAG
-            if "<" not in str(reference.contents[1]):
-                refAuthorName = str(reference.contents[1])
+            for el in reference.contents:
+                if "<" not in str(el):
+                    refAuthorNameMatch = re.search(r'[A-Za-z,\s]*',str(el))
+                    refAuthorName = refAuthorNameMatch.group(0)
+                    print("Autorname: " + refAuthorName)
 
             references["count"] += 1
-            referenceData ={"referenceIndex": int(reference.a['id']), "referenceName": str(reference.contents[-1].string), "referenceAuthor": refAuthorName, "referenceYear": refYear}
+
+            #Es gibt die Möglichkeit dass mehere a
+
+            referenceSubArray = reference.find_all("a")
+
+            referenceIndex = ""
+
+            print("array")
+            print(referenceSubArray)
+
+            for a in referenceSubArray:
+                if "id" in a:
+                    print("Stop gefunden")
+
+                    referenceIndex = int(a['d'])
+
+
+
+            referenceData ={"referenceIndex": int(reference["value"]), "referenceName": str(reference.contents[-1].string), "referenceAuthor": refAuthorName, "referenceYear": refYear}
             references["referencesList"].append(referenceData)
 
-    #print("referenes")
-    #print (references)
+
     return references
 
 
@@ -245,10 +269,16 @@ def getAuthors(htmlArticle):
             finding = authorEl.next_element.next_element.find('a')
             print("finding")
             print(authorEl)
-            print(finding)
+            if finding != None and finding != -1:
+                print("das ist finding")
+                print(finding)
+                if "contents" in finding:
+                    print("Hier ist Contents")
+                    print(finding.contents)
             print("finding ENDE")
 
-            if finding != None and (authorEl.next_element.next_element.find('a') != -1) and authorEl.next_sibling and str(finding.contents[0]) != '*':
+            #Autoren sind nummeriert
+            if finding != None and finding != -1 and authorEl.next_sibling and "contents" in finding and str(finding.contents[0]) != '*':
                 universityIndex = authorEl.next_element.next_element.a.string
                 university = htmlArticle.dl.find('dd', id="a" + universityIndex)
                 universityCountry = str(university.contents[-1]).split(',')[-1].strip()
@@ -289,10 +319,10 @@ def getSelectionText(htmlArticle):
         if section.text=="References":
             continue
         if title!="": #and text!="":
-            dataImages=getImages(section.findNext())
-            dataFormula= ""#getFormula(section.findNext())
-            dataTables = getTables(section.findNext())
-            h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTables,'pictures':dataImages,'formula':dataFormula})
+            #dataImages=getImages(section.findNext())
+            #dataFormula= ""#getFormula(section.findNext())
+            #dataTables = getTables(section.findNext())
+            h4array.append({"title": title, "text": text,'subsection':subsection})#,'tables':dataTables,'pictures':dataImages,'formula':dataFormula})
             print('save h4section')
         print("titel:" + section.text)
         subsection = []
@@ -345,11 +375,11 @@ def getSelectionText(htmlArticle):
             subsection.append({"title": innertitle, "text": innertext, 'depth': 2, 'subsection': []})
 
 
-    dataImages = getImages(section.findNext())
-    dataTables = getTables(section.findNext())
-    dataFormula = getFormula(section.findNext())
-    h4array.append({"title": title, "text": text, 'depth': 1, 'subsection': subsection, 'tables': dataTables,
-                    'pictures': dataImages, 'formula': dataFormula})
+    #dataImages = getImages(section.findNext())
+    #dataTables = getTables(section.findNext())
+    #dataFormula = getFormula(section.findNext())
+    h4array.append({"title": title, "text": text, 'depth': 1, 'subsection': subsection})#, 'tables': dataTables,
+                    #'pictures': dataImages, 'formula': dataFormula})
     return h4array
 
 
