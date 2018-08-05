@@ -28,12 +28,20 @@ def parseHTML():
                 htmlfile = BeautifulSoup(file, 'html.parser')
                 output = {}
                 htmlarticle = htmlfile.article
-                output['title'] = getTitel(htmlarticle)
+                if not htmlarticle:
+                    continue
+                titel=getTitel(htmlarticle)
+                if titel==EMPTYJSONTAG:
+                    continue
+                output['title'] = titel
                 output['metaData']= getMetadata(htmlfile,categoryFolder,source)
                 output['abstract'] = getAbstract(htmlarticle)
                 output['authors'] = getAuthors(htmlarticle)
                 output['references'] = getallReferences(htmlarticle)
-                output['text'] = getSelectionText(htmlfile)
+                text=getSelectionText(htmlfile)
+                if text==EMPTYJSONTAG:
+                    continue
+                output['text'] = text
 
                 print("output")
                 print(output)
@@ -57,8 +65,8 @@ def readJsonFiles():
 
 
 def getTitel(htmlArticle):
-    title=htmlArticle.find("h1").text
-    if title:
+    if htmlArticle.find("h1"):
+        title=htmlArticle.find("h1").text
         return title
     else:
         return EMPTYJSONTAG
@@ -183,30 +191,64 @@ def getAbstractText(abstract):
     titel = ""
     #print(data.text.splitlines())
     for tag in abstract.findAll():
-        #print(tag.name)
         if tag.name=="strong":
-            if titel == "" and tag.text!=":":
-                titel=tag.text
-                if tag.next_sibling.name != "br":
-                    text=tag.next_sibling
-                #print(tag.next_sibling)
-            elif tag.text!=":":
-                #print(tag.text)
-                titel=titel.strip().replace(":","")
-                text=text.strip()
-                result.append({"title":titel,"text":text,"depth":1})
-                #print('section: '+ "title:"+ titel+"text: "+text)
-                titel=tag.text
-                text=tag.next_sibling
-            else:
-                text = tag.next_sibling
-        elif not (tag.name == "br" or tag.name =="p"):
-            #print("sgtrzjtukziluikhjg")
-            #print(tag.name)
-            if tag.text and tag.next_sibling:
-                text=text+tag.text
-            if tag.next_sibling:
-                text = text + tag.next_sibling
+            #doppelt conclusion
+            if tag.parent.name!="strong":
+                if titel == "" and tag.text!=":":
+                    titel=tag.text
+                    print("überschrift found:" +titel)
+                    print("Passender text dazu:")
+                    print(tag)
+                    if tag.next_sibling and tag.next_sibling.name != "br" and tag.next_sibling.name != "em" and tag.next_sibling.name != "a": #:
+                        text=tag.next_sibling
+                    #dppelt name nach strong dann em(doppelt)
+                    #elif tag.next_sibling and tag.next_sibling.name == "em":
+                    #    text=tag.next_sibling.getText()
+                    print(text)
+                elif tag.text!=":" and tag.text!=None:
+
+                    titel=titel.strip().replace(":","")
+                    text=text.strip()
+                    print("Abschnitt speichern: titel:"+titel+"   Text: "+text)
+                    result.append({"title":titel,"text":text,"depth":1})
+                    #print('section: '+ "title:"+ titel+"text: "+text)
+                    if tag.find("strong"):
+                        tag=tag.find("strong")
+                        print("Tag")
+                        print(tag)
+                    titel=tag.text
+                    print("überschrift found:" + titel)
+                    print("Passender text dazu:")
+                    print(tag.next_sibling)
+                    if tag.next_sibling:
+                        if tag.next_sibling.name != "br" and tag.next_sibling.name != "a":  #:
+                            if tag.next_sibling.name!="strong" and tag.text!=":":
+                                text = tag.next_sibling
+                        elif tag.next_sibling.name == "em" or tag.next_sibling.name == "em" :
+                            text=tag.next_sibling.getText()
+                        else:
+                            text=tag.next_sibling.text
+                    else:
+                        text = tag.parent.next_sibling
+                else:
+                    text = tag.next_sibling
+        else:
+            #print("else")#
+            if tag.name !=None and tag.name !='p' and tag.name !='br':
+                if tag.name =="a" or tag.name =="span" or (tag.name=="em" and tag.parent.name!="span") and tag.name!="sup":
+                    text=text+tag.getText()
+                    if tag.next_sibling:
+                        text=text+tag.next_sibling
+                elif tag.next_sibling and not tag.next_sibling.name:
+                    #if tag.next_sibling.name and tag.next_sibling.name!="sup":
+                    text = text + tag.next_sibling
+
+            #test br im Absatz
+            elif tag.name =='br' and tag.next_sibling and tag.next_sibling.name==None:
+                text=text+tag.next_sibling
+            elif tag.name =='p' and tag.next_sibling and tag.next_sibling.name==None:
+                text=text+tag.next_sibling
+
     result.append({"title": titel, "text": text, "depth": 1})
     return result
 
@@ -218,26 +260,25 @@ def getAbstract(htmlArticle):
             container=div.find('h3')
             if container.text and container.text=="Abstract":
                 break
-    abstract = div.find('p').find('p')
+    if div and div.find('p'):
+        abstract = div.find('p').find('p')
+    else:
+        return EMPTYJSONTAG
 
     if abstract:
         #Absätze mit überschriften
+        list = []
         if abstract.find('strong'):
-            list=[]
+            print("Abstract mit überschriften")
             list = getAbstractText(abstract)
         #Absätze ohne überschriften
-        elif abstract.find('br'):
-            list = []
-            #print(abstract.text.splitlines())
-            for index,section in enumerate(abstract.text.splitlines()):
-                #print(section)
-                list.append({'title':EMPTYJSONTAG,'text':section,'depth':index})
-        #ohne Absatz
         else:
-            list = {'title': EMPTYJSONTAG, 'text': abstract.text}
+            print("Abstract ohne überschriften")
+            list.append({'title':EMPTYJSONTAG,'text':abstract.getText(),'depth':1})
     else:
         list = {'title': EMPTYJSONTAG, 'text': EMPTYJSONTAG}
-    #print(list)
+    print("final Abstract:")
+    print(list)
     return list
 
 def getMetadata(htmlfile,category,source):
@@ -314,72 +355,77 @@ def getSelectionText(htmlArticle):
     subsection=[]
     title=""
     text=""
-    for section in htmlArticle.findAll("h4"):
-        #neuerh4 gefunden --> speichern
-        if section.text=="References":
-            continue
-        if title!="": #and text!="":
-            #dataImages=getImages(section.findNext())
-            #dataFormula= ""#getFormula(section.findNext())
-            #dataTables = getTables(section.findNext())
-            h4array.append({"title": title, "text": text,'subsection':subsection})#,'tables':dataTables,'pictures':dataImages,'formula':dataFormula})
-            print('save h4section')
-        print("titel:" + section.text)
-        subsection = []
-        title = section.text
-        text = ""
-        innertitle = ""
-        innertext = ""
-        subsectionfound=False
+    if htmlArticle.find("h4"):
+        for section in htmlArticle.findAll("h4"):
+            #neuerh4 gefunden --> speichern
+            if section.text=="References":
+                continue
+            if title!="": #and text!="":
+                dataImages=getImages(section.findNext())
+                dataFormula= ""#getFormula(section.findNext())
+                dataTables = getTables(section.findNext())
+                h4array.append({"title": title, "text": text,'subsection':subsection,'tables':dataTables,'pictures':dataImages,'formula':dataFormula})
+                print('save h4section')
+            print("titel:" + section.text)
+            subsection = []
+            title = section.text
+            text = ""
+            innertitle = ""
+            innertext = ""
+            subsectionfound=False
 
-        #alle untertags bis zum nächsten h4 <div class="text-justify">....</div>
-        #<div class="table-responsive"> to get table  <div class="card card-block card-header mb-2"> bilder
-        print(section.findNext())
-        #print(section.findAll('p'))
-        for element in section.findNext():
-            print("element")
-            print("element1 " + str(element.name))
-            print(element)
-            if element.name == 'p' and not element.find("strong"):
-                print("p ohne strong")
-                #print(element)
-                if subsectionfound:
-                    innertext+=element.get_text()
-                else:
-                    text=text+element.get_text()
-                #h4array.append({"titel": title, "text": element.get_text()})
-
-            elif element.name == 'p' and element.find("strong") and not element.find("strong")==-1:
-                # none wenns vorkommt -1 wenn nicht
-                if element.contents[0].find("strong")!=-1 :
-                    if "Table" not in element.find("strong").text and "Figure" not in element.find("strong").text:
-                        print("unterüberschrift found")
-                        subsectionfound = True
-                        if innertitle != "" and innertext != "":
-                            subsection.append({"title": innertitle, "text": innertext, 'depth':2,'subsection': []})
-                        innertitle = element.find("strong").text
-                        innertext = ""
-                    else:
-                        if ":" not in element.find("strong").text:
-                            if subsectionfound:
-                                innertext += element.get_text()
-                            else:
-                                text += element.get_text()
-
-                else:
+            #alle untertags bis zum nächsten h4 <div class="text-justify">....</div>
+            #<div class="table-responsive"> to get table  <div class="card card-block card-header mb-2"> bilder
+            print(section.findNext())
+            #print(section.findAll('p'))
+            for element in section.findNext():
+                print("element")
+                print("element1 " + str(element.name))
+                print(element)
+                if element.name == 'p' and not element.find("strong"):
+                    print("p ohne strong")
+                    #print(element)
                     if subsectionfound:
-                        innertext += element.get_text()
+                        innertext+=element.get_text()
                     else:
-                        text += element.get_text()
-        if innertitle!="" or innertext!="":
-            subsection.append({"title": innertitle, "text": innertext, 'depth': 2, 'subsection': []})
+                        text=text+element.get_text()
+                    #h4array.append({"titel": title, "text": element.get_text()})
+
+                elif element.name == 'p' and element.find("strong") and not element.find("strong")==-1:
+                    # none wenns vorkommt -1 wenn nicht
+                    if element.contents[0].find("strong")!=-1 :
+                        if "Table" not in element.find("strong").text and "Figure" not in element.find("strong").text:
+                            print("unterüberschrift found")
+                            subsectionfound = True
+                            if innertitle != "" and innertext != "":
+                                subsection.append({"title": innertitle, "text": innertext, 'depth':2,'subsection': []})
+                            innertitle = element.find("strong").text
+                            innertext = ""
+                        else:
+                            if ":" not in element.find("strong").text:
+                                if subsectionfound:
+                                    innertext += element.get_text()
+                                else:
+                                    text += element.get_text()
+
+                    else:
+                        if subsectionfound:
+                            innertext += element.get_text()
+                        else:
+                            text += element.get_text()
+            if innertitle!="" or innertext!="":
+                subsection.append({"title": innertitle, "text": innertext, 'depth': 2, 'subsection': []})
 
 
-    #dataImages = getImages(section.findNext())
-    #dataTables = getTables(section.findNext())
-    #dataFormula = getFormula(section.findNext())
-    h4array.append({"title": title, "text": text, 'depth': 1, 'subsection': subsection})#, 'tables': dataTables,
-                    #'pictures': dataImages, 'formula': dataFormula})
+        dataImages = getImages(section.findNext())
+        dataTables = getTables(section.findNext())
+        dataFormula = getFormula(section.findNext())
+        h4array.append({"title": title, "text": text, 'depth': 1, 'subsection': subsection, 'tables': dataTables,
+                        'pictures': dataImages, 'formula': dataFormula})
+    else:
+        #Artikel hat keine Überschift!
+        #soll nicht in datenbank
+        return EMPTYJSONTAG
     return h4array
 
 
