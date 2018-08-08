@@ -308,6 +308,7 @@ def getAuthors(htmlArticle):
             author['authorIndex'] = index = index + 1
 
             finding = authorEl.next_element.next_element.find('a')
+
             print("finding")
             print(authorEl)
             if finding != None and finding != -1:
