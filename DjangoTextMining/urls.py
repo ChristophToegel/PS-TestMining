@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('textMining', views.showStartPage),
     path('textMining/calculateMetriken/', views.calculateMetriken),
-    path('textMining/testReadPaper/', views.readJsonFiles),
+    path('textMining/readPaper/', views.readJsonFiles),
 
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
 ]

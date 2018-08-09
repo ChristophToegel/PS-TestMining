@@ -16,41 +16,44 @@ def parseHTML():
     readpathbasic=path.join(htmlfilesdirectory,source)
     for categoryFolder in listdir(readpathbasic):
         print(categoryFolder)
-        test = 0
-        readpath=path.join(readpathbasic,categoryFolder)
-        for file in listdir(readpath):
-            #print(file)
-            #categoryDirectory=path.join(outputdirectory,folder)
-            if isfile(join(readpath, file)) and file.endswith('.html') and test<=2:
-                file = open(join(readpath, file))
-                print('parse file: ' + file.name)
+        if categoryFolder !=".DS_Store":
+            test = 0
+            readpath=path.join(readpathbasic,categoryFolder)
+            for file in listdir(readpath):
+                #print(file)
+                #categoryDirectory=path.join(outputdirectory,folder)
+                if isfile(join(readpath, file)) and file.endswith('.html') and test<=2:
+                    file = open(join(readpath, file))
+                    print('parse file: ' + file.name)
 
-                htmlfile = BeautifulSoup(file, 'html.parser')
-                output = {}
-                htmlarticle = htmlfile.article
-                if not htmlarticle:
-                    continue
-                titel=getTitel(htmlarticle)
-                if titel==EMPTYJSONTAG:
-                    continue
-                output['title'] = titel
-                output['metaData']= getMetadata(htmlfile,categoryFolder,source)
-                output['abstract'] = getAbstract(htmlarticle)
-                output['authors'] = getAuthors(htmlarticle)
-                output['references'] = getallReferences(htmlarticle)
-                text=getSelectionText(htmlfile)
-                if text==EMPTYJSONTAG:
-                    continue
-                output['text'] = text
+                    htmlfile = BeautifulSoup(file, 'html.parser')
+                    output = {}
+                    htmlarticle = htmlfile.article
+                    if not htmlarticle:
+                        continue
+                    titel=getTitel(htmlarticle)
+                    if titel==EMPTYJSONTAG:
+                        continue
+                    output['title'] = titel
+                    output['metaData']= getMetadata(htmlfile,categoryFolder,source)
+                    output['abstract'] = getAbstract(htmlarticle)
+                    output['authors'] = getAuthors(htmlarticle)
+                    output['references'] = getallReferences(htmlarticle)
+                    text=getSelectionText(htmlfile)
+                    if text==EMPTYJSONTAG:
+                        continue
+                    output['text'] = text
 
-                print("output")
-                print(output)
+                    print("output")
+                    print(output)
 
-                name = path.splitext(basename(file.name))[0]
-                file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
-                json.dump(output, file,ensure_ascii=False)
-                file.close()
-                #test+=1
+                    name = path.splitext(basename(file.name))[0]
+                    with open(join(outputdirectory, name + '.json'), 'w') as f:
+                        json.dump(output, f, ensure_ascii=False)
+                    #file = open(join(outputdirectory, name + '.json'), 'w', encoding='utf-8')
+                    #json.dump(output, file)
+                    #file.close()
+                    #test+=1
 
 def readJsonFiles():
     outputdirectory = 'output'

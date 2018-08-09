@@ -2,8 +2,10 @@
 {% block title %}Liste der Paper{% endblock %}
 
 {% block body %}
-    {% if paper %}
-    <p>{{ paper }} hinzugefügt. Titel= {{ paper.title }} </p>
-    {% endif %}
+
+
+    {% for paper in paperlist %}
+    <ul>{{ paper }} hinzugefügt. Titel= {{ paper.title }}</ul>
+    {% endfor %}
 
 {% endblock %}

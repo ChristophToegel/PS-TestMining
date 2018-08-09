@@ -3,6 +3,7 @@ from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 
+
 def calculateWords(paper):
     #calculate for Abschnitte
     #print(Paper.text)
