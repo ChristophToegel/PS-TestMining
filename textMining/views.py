@@ -36,9 +36,9 @@ def readJsonFiles(request):
     readpath = "./output"
     onlyOne = False
     counter=0
-    '''for filename in listdir(readpath):
+    for filename in listdir(readpath):
         if not onlyOne:
-            if filename != ".DS_Store":
+            if filename != ".DS_Store": #file.endswith('.json')
                 file = open(join(readpath, filename), 'r', encoding='utf-8', errors="ignore")
                 paper = json.load(file)
                 print(file)
@@ -68,16 +68,26 @@ def readJsonFiles(request):
                     metaDatavalue = Metadata.objects.create(keywords=keywords,
                                                         yearOfArticle=paper['metaData']['yearOfArticle'],
                                                         category=paper['metaData']['category'],
-                                                        source=paper['metaData']['source'])
+                                                        source=paper['metaData']['source'],
+                                                        journalTitle = paper['metaData']['journaltitle'],
+                                                        impactfactor = paper['metaData']['impactFactor'],
+                                                        URL=paper['metaData']['URL'],
+                                                        paperType=paper['metaData']['paperType']
+                                                        )
                 else:
                     metaDatavalue=None
+
                 # create Abstract
                 #print("abstract")
-                #TODO manchmal ist der Abstract ein array
+                #Todo paper sollte immer Array sein( auch bei titel=empty and text=empty) <<empty>>
+                abstractArray=[]
                 if isinstance(paper['abstract'], list):
-                    abstract = Abstract.objects.create(title=paper['abstract'][0]['title'], text=paper['abstract'][0]['text'])
+                    for abstractPart in paper['abstract']:
+                        print(abstractPart)
+                        abstractArray.append(Abstract.objects.create(title=abstractPart['title'],text=abstractPart['text']))
                 else:
-                    abstract =None #Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['text'])
+                    if not paper['abstract']=='<<empty>>':
+                        abstractArray.append(Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['title']))
 
                 if paper.get('references'):
                     # create Reference
@@ -128,12 +138,12 @@ def readJsonFiles(request):
                                             ))
 
                 Paper.objects.create(title=paper['title'], metaData=metaDatavalue, authors=authors,
-                                                abstract=abstract,
+                                                abstract=abstractArray,
                                                 references=references, text=TextArray)
 
                 counter+=1
         onlyOne=False
-        '''
+
 
     #print(newpaper)
     paperlist=Paper.objects.all()[:10]
@@ -148,10 +158,8 @@ def readJsonFiles(request):
 #Aufbereiten der Text Stopwortfiltern und lemmatisieren
 def processPaper(request):
     print("Paper werden aufbreitet....")
-    paperlist = Paper.objects.all()[:10]
+    paperlist = Paper.objects.all()[:20]
     for paper in paperlist:
         metriken.removeStopwords(paper)
-        #return and save the text
-
-
-    return render(request, 'Helloworld.html')
+    context = {'paperlist': paperlist}
+    return render(request, 'Helloworld.html', context)

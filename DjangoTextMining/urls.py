@@ -20,8 +20,10 @@ from textMining import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('textMining', views.showStartPage),
-    path('textMining/calculateMetriken/', views.calculateMetriken),
-    path('textMining/readPaper/', views.readJsonFiles),
 
+    path('textMining/readPaper/', views.readJsonFiles),
+    path('textMining/processPaper/', views.processPaper),
+
+    path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
 ]
