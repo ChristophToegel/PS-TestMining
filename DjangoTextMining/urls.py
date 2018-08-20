@@ -19,9 +19,11 @@ from textMining import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('textMining', views.showStartPage),
+    path('textMining', views.showStartPage ,name="Home"),
     path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/testReadPaper/', views.readJsonFiles),
+    path('textMining/uploadPaper/', views.uploadFiles),
+    path('textMining/uploadImprovedPaperAjax/', views.uploadImprovedPaper, name="improvedPaper"),
 
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
 ]
