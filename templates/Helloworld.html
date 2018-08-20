@@ -2,8 +2,24 @@
 {% block title %}Liste der Paper{% endblock %}
 
 {% block body %}
-    {% if paper %}
-    <p>{{ paper }} hinzugefügt. Titel= {{ paper.title }} </p>
-    {% endif %}
+
+
+    {% for paper in paperlist %}
+    <ul>{{ paper }} hinzugefügt. Titel= {{ paper.title }}</ul>
+    {% endfor %}
+    <hr>
+    {% for paper in paperlist %}
+    <li>
+         <ul>{{ paper.abstract.title }}</ul>
+        <ul>{{ paper.abstract.text }}</ul>
+     <ul>{{ paper.abstract.stemmedText.text}}</ul>
+    <ul>Text:</ul>
+        {% for text in paper.text %}
+            <ul>{{ text.text}}</ul>
+             <ul>StemmedText:</ul>
+            <ul>{{ text.stemmedText.text}}</ul>
+        {% endfor %}
+    </li>
+    {% endfor %}
 
 {% endblock %}
