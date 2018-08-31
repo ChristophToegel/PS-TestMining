@@ -36,8 +36,8 @@ def showStartPage(request):
 def showVergleichPage(request):
     return render(request, 'vergleich.html')
 
-def showUploadArea(request):
-    return render(request, 'upload.html')
+#+def showUploadArea(request):
+#    return render(request, 'upload.html')
 
 def showResults(request):
     return render(request, 'ergebnis.html')
@@ -183,7 +183,7 @@ def processPaper(request):
 
 def uploadFiles(request):
     if request.method == 'GET':
-        return render(request, 'Upload.html')
+        return render(request, 'upload.html')
 
     if request.method == 'POST':
         #print(request.FILES.getlist('JsonPaper'))
@@ -213,7 +213,7 @@ def uploadFiles(request):
             #filename = fs.save(myfile.name, myfile)
 
         context={'validPaper':validPaper,'invalidPaper':invalidPaper}
-        return render(request, 'UploadSummary.html',context)
+        return render(request, 'uploadSummary.html', context)
 
 @csrf_exempt
 def uploadImprovedPaper(request):

@@ -24,13 +24,13 @@ urlpatterns = [
     path('textMining/readPaper/', views.readJsonFiles),
     path('textMining/processPaper/', views.processPaper),
     path('textMining/calculateMetriken/', views.calculateMetriken),
-    path('textMining/uploadPaper/', views.uploadFiles),
+
     path('textMining/uploadImprovedPaperAjax/', views.uploadImprovedPaper, name="improvedPaper"),
 
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
 
     path('textMining', views.showStartPage, name='home'),
     path('textMining/vergleich/', views.showVergleichPage, name='vergleich'),
-    path('textMining/upload/', views.showUploadArea, name='upload'),
+    path('textMining/upload/', views.uploadFiles, name='upload'),
     path('textMining/results/', views.showResults, name='results'),
 ]

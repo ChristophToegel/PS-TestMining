@@ -1,37 +1,16 @@
 {% extends 'index.html' %}
-{% block title %}Upload{% endblock %}
+{% block title %}Paperupload{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Upload</h1>
-        </div>
-        <!-- /.col-lg-12 -->
-    </div>
-    <!-- /.row -->
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Lade eigene Dokumete zur Analyse hoch
-                </div>
-                <!-- /.panel-heading -->
-                <div class="panel-body">
 
-                <!-- /.row -->
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Drop files +
-                            </div>
-                        </div>
-                        <!-- /.panel -->
-                    </div>
-                    <!-- /.col-lg-6 -->
-                </div>
-            </div>
-        </div>
+   <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="upload"> Wählen Sie ihre Jsonfiles aus:</label>
+            <input type="file" accept=".json" id="upload" name="JsonPaper" multiple required>
+            <button type="submit">Upload Paper</button>
+        </form>
     </div>
-    </div>
+
+
 {% endblock %}

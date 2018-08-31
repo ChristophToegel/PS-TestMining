@@ -3,11 +3,7 @@
 
 {% block body %}
 
-    {% load static %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"
-            integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i"
-            crossorigin="anonymous"></script>
-
+    <div class="container">
     <h5><span id="validPaperNum">{{ validPaper|length }} </span> Paper wurden zur DB hinzugefügt:</h5>
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
             aria-expanded="false" aria-controls="collapseExample">
@@ -35,7 +31,7 @@
     {% if invalidPaper %}
         <div id="invalidPaper">
             <h5><span id="invalidPaperNum">{{ invalidPaper|length }}</span> Nicht valide Paper:</h5>
-            <a href="{% url "Home" %}" class="btn btn-primary" role="button">Fehlerhafe Paper ignorieren</a>
+            <a href="{% url "home" %}" class="btn btn-primary" role="button">Fehlerhafe Paper ignorieren</a>
 
             {% for paper in invalidPaper %}
                 <div class="jumbotron">
@@ -82,8 +78,10 @@
                 </div>
             </div>
     {% else %}
-        <a href="{% url "Home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>
+        <a href="{% url "home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>
     {% endif %}
+
+    </div>
 
     <script>
 
@@ -121,7 +119,7 @@
                         $('#validPaperNum').html(parseInt($('#validPaperNum').html()) + 1);
                         if ($('#invalidPaperNum').html() == 0) {
                             $('#invalidPaper').remove();
-                            $('hr').after('<a href="{% url "Home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>')
+                            $('hr').after('<a href="{% url "home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>')
                         }
                         //invalidPaper -1; vaild+1; invalidPaper==0 dann weg!
                     } else {
