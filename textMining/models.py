@@ -6,10 +6,34 @@ from mongoengine import *
 # http://docs.mongoengine.org
 connect('textmining')
 
-
-class StemmedText(Document):
+# TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!!
+class TextVariant(Document):
     text = StringField()
     method = StringField()
+
+# METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!!
+
+
+class ResCharSegmentCount(Document):
+    charCountWhiteSpace = StringField(default= "0")
+    charCountNoWhiteSpace = StringField(default = "0")
+
+class ResWordSegmentCount(Document):
+    wordCount = StringField(default= "0")
+
+class ResPunctSegmentCount(Document):
+    punctCount = StringField(default= "0")
+
+class ResCitationSegmentCount(Document):
+    citationCount = StringField(default= "0")
+
+
+
+class Metric(Document):
+    charCountResults = EmbeddedDocumentField('ResCharSegmentCount')
+    wordCountResults = EmbeddedDocumentField('ResWordSegmentCount')
+    punctCountResults = EmbeddedDocumentField('ResPunctSegmentCount')
+    citationCountResults = EmbeddedDocumentField('ResCitationSegmentCount')
 
 
 class Tables(Document):
@@ -37,18 +61,23 @@ class Picture(Document):
 class Subsection(Document):
     title = StringField()
     text = StringField()
-    stemmedText = EmbeddedDocumentListField('StemmedText')
+    stopFilteredText = EmbeddedDocumentField('TextVariant')
+    lemmatizedText = EmbeddedDocumentField('TextVariant')
+    metrik = EmbeddedDocumentField('Metric', null = True)
     subsubsection = ListField()
 
 
 class Text(Document):
     title = StringField()
     text = StringField()
-    stemmedText = EmbeddedDocumentListField('StemmedText')
+    stopFilteredText = EmbeddedDocumentField('TextVariant')
+    lemmatizedText = EmbeddedDocumentField('TextVariant')
+    metrik = EmbeddedDocumentField('Metric', null = True)
     subsection = EmbeddedDocumentListField('Subsection')
     tables = EmbeddedDocumentField('Tables')
     pictures = EmbeddedDocumentField('Pictures')
     formulas = StringField()  # String weil leer und nicht 0
+
 
 
 class Reference(Document):
@@ -82,7 +111,9 @@ class Authors(Document):
 class Abstract(Document):
     title = StringField()
     text = StringField()
-    stemmedText = EmbeddedDocumentListField('StemmedText')
+    stopFilteredText = EmbeddedDocumentField('TextVariant')
+    lemmatizedText = EmbeddedDocumentField('TextVariant')
+    metrik = EmbeddedDocumentField('Metric', null = True)
 
 
 class Metadata(Document):
@@ -110,3 +141,4 @@ class Paper(Document):
     authors = EmbeddedDocumentField('Authors')
     references = EmbeddedDocumentField('References')
     text = EmbeddedDocumentListField('Text')
+
