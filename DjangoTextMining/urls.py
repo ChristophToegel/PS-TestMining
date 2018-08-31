@@ -19,7 +19,6 @@ from textMining import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('textMining', views.showStartPage),
     #path('textMining/<int:pk>/', views.changeCategory),
 
     path('textMining/readPaper/', views.readJsonFiles),
@@ -27,7 +26,9 @@ urlpatterns = [
 
     path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
-    path('textMining/frontPage/', views.showFrontPage, name='frontpage'),
-    path('textMining/uploadArea/', views.showUploadArea, name='upload'),
+
+    path('textMining', views.showStartPage, name='home'),
+    path('textMining/vergleich/', views.showVergleichPage, name='vergleich'),
+    path('textMining/upload/', views.showUploadArea, name='upload'),
     path('textMining/results/', views.showResults, name='results'),
 ]

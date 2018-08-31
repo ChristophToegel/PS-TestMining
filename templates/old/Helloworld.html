@@ -3,6 +3,10 @@
 
 {% block body %}
 
+     {% for paper in paperlist %}
+         {{ paper.abstract.metrik.charCountResults.charCountWhiteSpace }}
+    {% endfor %}
+
 
     {% for paper in paperlist %}
     <ul>{{ paper }} hinzugefügt. Titel= {{ paper.title }}</ul>

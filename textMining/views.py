@@ -18,20 +18,19 @@ def calculateMetriken(request):
     # save words in DB
     context = {'info': 'metriken werden berechnet'}
     categories = Metadata.objekts.distinct('category')
-    return render(request, 'Startseite.html', context, categories)
+    return render(request, 'startseite.html', context, categories)
 
 def calculateFreqWords(request):
     corpus1=metriken.calculateWordFrequency(Paper.objects.filter(metaData__category='Food & Nutrition'))
     #print(corpus1)
     corpus2 = metriken.calculateWordFrequency(Paper.objects.filter(metaData__category='Mathematics'))
     #print(corpus2)
-    return render(request, 'freqWords.html', {"corpus1":corpus1,"corpus2":corpus2})
-
+    return render(request, 'old/freqWords.html', {"corpus1":corpus1, "corpus2":corpus2})
 
 def showStartPage(request):
-    return render(request, 'Startseite.html')
+    return render(request, 'startseite.html')
 
-def showFrontPage(request):
+def showVergleichPage(request):
     return render(request, 'vergleich.html')
 
 def showUploadArea(request):
@@ -42,7 +41,7 @@ def showResults(request):
 
 def readJsonFiles(request):
     # loads all Json files....
-    readpath = "./output"
+    readpath = "./output20"
     onlyOne = False
     counter=0
     for filename in listdir(readpath):
@@ -161,7 +160,7 @@ def readJsonFiles(request):
     print(kategorien)
     #3296
     context = {'paperlist': paperlist}
-    return render(request, 'Helloworld.html', context)
+    return render(request, 'old/Helloworld.html', context)
 
 
 #Aufbereiten der Text Stopwortfiltern und lemmatisieren
@@ -176,6 +175,6 @@ def processPaper(request):
 
 
     context = {'paperlist': paperlist}
-    return render(request, 'Helloworld.html', context)
+    return render(request, 'old/Helloworld.html', context)
 
 
