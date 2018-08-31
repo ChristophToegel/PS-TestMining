@@ -17,7 +17,8 @@ def calculateMetriken(request):
         print(words)
     # save words in DB
     context = {'info': 'metriken werden berechnet'}
-    return render(request, 'Startseite.html', context)
+    categories = Metadata.objekts.distinct('category')
+    return render(request, 'Startseite.html', context, categories)
 
 def calculateFreqWords(request):
     corpus1=metriken.calculateWordFrequency(Paper.objects.filter(metaData__category='Food & Nutrition'))
@@ -30,6 +31,14 @@ def calculateFreqWords(request):
 def showStartPage(request):
     return render(request, 'Startseite.html')
 
+def showFrontPage(request):
+    return render(request, 'vergleich.html')
+
+def showUploadArea(request):
+    return render(request, 'upload.html')
+
+def showResults(request):
+    return render(request, 'ergebnis.html')
 
 def readJsonFiles(request):
     # loads all Json files....

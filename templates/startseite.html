@@ -6,4 +6,16 @@
     {% if info %}
         <p> {{ info }}</p>
     {% endif %}
+    <h2>Welche Kategorie möchten Sie auswählen?</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <table>
+            {{form.as_table }}
+        </table>
+        <button type="submit">Weiter</button>
+    </form>
 {% endblock %}
+
+
+
+

@@ -14,16 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from textMining import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('textMining', views.showStartPage),
+    #path('textMining/<int:pk>/', views.changeCategory),
 
     path('textMining/readPaper/', views.readJsonFiles),
     path('textMining/processPaper/', views.processPaper),
 
     path('textMining/calculateMetriken/', views.calculateMetriken),
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
+    path('textMining/frontPage/', views.showFrontPage, name='frontpage'),
+    path('textMining/uploadArea/', views.showUploadArea, name='upload'),
+    path('textMining/results/', views.showResults, name='results'),
 ]
