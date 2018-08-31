@@ -15,9 +15,15 @@
      <ul>{{ paper.abstract.stemmedText.text}}</ul>
     <ul>Text:</ul>
         {% for text in paper.text %}
+             <ul>ENDE ENDE</ul>
             <ul>{{ text.text}}</ul>
              <ul>StemmedText:</ul>
-            <ul>{{ text.stemmedText.text}}</ul>
+            <ul>{{ text.stopFilteredText.text}}</ul>
+             <ul>LemmatizedText:</ul>
+            <ul>{{ text.lemmatizedText.text}}</ul>
+            <ul>Metriks:</ul>
+            <ul>{{ text.metrik.charCountResults.charCountWhiteSpace}}</ul>
+            <ul>ENDE ENDE</ul>
         {% endfor %}
     </li>
     {% endfor %}

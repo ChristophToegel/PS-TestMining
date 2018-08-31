@@ -2,7 +2,7 @@
 # Create your views here.
 from django.shortcuts import render
 from .models import Text, Subsection, Reference, References, Paper, Author, Metadata, Authors, University, Abstract, \
-    Picture, Pictures, Table, Tables
+    Picture, Pictures, Table, Tables, Metric, ResCitationSegmentCount
 import json
 from django.shortcuts import redirect
 from os import listdir
@@ -84,10 +84,10 @@ def readJsonFiles(request):
                 if isinstance(paper['abstract'], list):
                     for abstractPart in paper['abstract']:
                         print(abstractPart)
-                        abstractArray.append(Abstract.objects.create(title=abstractPart['title'],text=abstractPart['text']))
+                        abstractArray.append(Abstract.objects.create(title=abstractPart['title'],text=abstractPart['text'] ,metrik = Metric.objects.create())) #citationCountResults = ResCitationSegmentCount.objects.create(citationCount = 11) ))
                 else:
                     if not paper['abstract']=='<<empty>>':
-                        abstractArray.append(Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['title']))
+                        abstractArray.append(Abstract.objects.create(title=paper['abstract']['title'], text=paper['abstract']['title'],metrik = Metric.objects.create()))
 
                 if paper.get('references'):
                     # create Reference
@@ -130,9 +130,9 @@ def readJsonFiles(request):
                     if textsection['subsection']:
                         for subsection in textsection['subsection']:
                             subTextArray.append(
-                                Subsection.objects.create(title=subsection['title'], text=subsection['text']))
+                                Subsection.objects.create(title=subsection['title'], text=subsection['text'],metrik = Metric.objects.create()))
                     TextArray.append(
-                        Text.objects.create(title=textsection['title'], text=textsection['text'], subsection=subTextArray,
+                        Text.objects.create(title=textsection['title'], text=textsection['text'],metrik = Metric.objects.create(), subsection=subTextArray,
                                             tables=tables, pictures=pictures,
                                             #formula=textsection['formula']
                                             ))
@@ -158,8 +158,15 @@ def readJsonFiles(request):
 #Aufbereiten der Text Stopwortfiltern und lemmatisieren
 def processPaper(request):
     print("Paper werden aufbreitet....")
-    paperlist = Paper.objects.all()[:20]
+    paperlist = Paper.objects.all()[:4]
     for paper in paperlist:
+        print (paper)
         metriken.removeStopwords(paper)
+        metriken.lemmatize_Paper(paper)
+        metriken.char_count_per_section_Paper(paper)
+
+
     context = {'paperlist': paperlist}
     return render(request, 'Helloworld.html', context)
+
+
