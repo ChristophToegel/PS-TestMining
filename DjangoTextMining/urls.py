@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from textMining import views
 
 urlpatterns = [
@@ -23,8 +23,10 @@ urlpatterns = [
 
     path('textMining/readPaper/', views.readJsonFiles),
     path('textMining/processPaper/', views.processPaper),
-
     path('textMining/calculateMetriken/', views.calculateMetriken),
+    path('textMining/uploadPaper/', views.uploadFiles),
+    path('textMining/uploadImprovedPaperAjax/', views.uploadImprovedPaper, name="improvedPaper"),
+
     path('textMining/calculateFreqWords/', views.calculateFreqWords),
 
     path('textMining', views.showStartPage, name='home'),

@@ -8,7 +8,10 @@ from django.shortcuts import redirect
 from os import listdir
 from os.path import join
 import metriken
-
+from jsonschema import Draft4Validator
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import ast
 
 def calculateMetriken(request):
     papers = Paper.objects.all()
@@ -178,3 +181,65 @@ def processPaper(request):
     return render(request, 'old/Helloworld.html', context)
 
 
+def uploadFiles(request):
+    if request.method == 'GET':
+        return render(request, 'Upload.html')
+
+    if request.method == 'POST':
+        #print(request.FILES.getlist('JsonPaper'))
+        validPaper = []
+        invalidPaper = []
+        json_data = open("Paperschema.json", "r")
+        schema = json.load(json_data)
+        v = Draft4Validator(schema)
+        for uploadfile in request.FILES.getlist('JsonPaper'):
+            print(uploadfile.name)
+            jsondata=json.loads(uploadfile.read().decode('utf-8'))
+            #print(jsondata)
+            if v.is_valid(jsondata):
+                validPaper.append(uploadfile)
+                print("validFile:"+uploadfile.name)
+            else:
+
+                print("invalidFile:" + uploadfile.name)
+                errors=[]
+                for error in sorted(v.iter_errors(jsondata), key=str):
+                    errors.append(error)
+                    print(error)
+                #print(json.dumps(jsondata))
+                invalidPaper.append({'filename':uploadfile,'data': json.dumps(jsondata),'errors':errors})
+            #save the paper
+            #fs = FileSystemStorage()
+            #filename = fs.save(myfile.name, myfile)
+
+        context={'validPaper':validPaper,'invalidPaper':invalidPaper}
+        return render(request, 'UploadSummary.html',context)
+
+@csrf_exempt
+def uploadImprovedPaper(request):
+    if request.method == 'POST':
+        print(request.POST)
+        filename=request.POST.get('filename')
+        response = {}
+        filedata=request.POST.get('file')
+        jsondata = json.loads(filedata)
+        json_data = open("Paperschema.json", "r")
+        schema = json.load(json_data)
+        v = Draft4Validator(schema)
+
+        if v.is_valid(jsondata):
+            print("validFile:" + filename)
+            response['valid'] = 'true'
+            response['filename'] = filename
+        else:
+            print("invalidFile:" + filename)
+            response['valid'] = 'false'
+            response['errors'] = []
+            for error in sorted(v.iter_errors(jsondata), key=str):
+                response['errors'].append(str(error))
+                print(error)
+            response['filename'] = filename
+            response['data'] = jsondata
+            #response['errors'] = errors
+
+        return JsonResponse(response)
