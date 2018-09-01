@@ -13,6 +13,7 @@ Die Anwendung erfordert Python3 und eine lokale mongoDB Installation.
 * [mongoengine](http://docs.mongoengine.org) (sudo pip(3) install mongoengine)
 * [django-bootstrap4](http://django-bootstrap4.readthedocs.io/en/latest/index.html) (pip(3) install django-bootstrap4)
 * [NLTK](https://www.nltk.org/install.html) pip(3) install nltk
+* [jsonschema](https://pypi.org/project/jsonschema/) pip(3) install jsonschema
 
 
 ### MongoDB installation:
