@@ -7,10 +7,11 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="upload"> Wählen Sie ihre Jsonfiles aus:</label>
-            <input type="file" accept=".json" id="upload" name="JsonPaper" multiple required>
+            <input type="file" id="upload" name="JsonPaper" multiple required>
             <button type="submit">Upload Paper</button>
         </form>
     </div>
+
 
 
 {% endblock %}
