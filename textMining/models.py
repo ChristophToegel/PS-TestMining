@@ -7,58 +7,58 @@ from mongoengine import *
 connect('textmining')
 
 # TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!! TEXT VARIANT !!!
-class TextVariant(Document):
+class TextVariant(EmbeddedDocument):
     text = StringField()
     method = StringField()
 
 # METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!! METRIK RESULTS !!!
 
 
-class ResCharSegmentCount(Document):
+class ResCharSegmentCount(EmbeddedDocument):
     charCountWhiteSpace = StringField(default= "0")
     charCountNoWhiteSpace = StringField(default = "0")
 
-class ResWordSegmentCount(Document):
+class ResWordSegmentCount(EmbeddedDocument):
     wordCount = StringField(default= "0")
 
-class ResPunctSegmentCount(Document):
+class ResPunctSegmentCount(EmbeddedDocument):
     punctCount = StringField(default= "0")
 
-class ResCitationSegmentCount(Document):
+class ResCitationSegmentCount(EmbeddedDocument):
     citationCount = StringField(default= "0")
 
 
 
-class Metric(Document):
+class Metric(EmbeddedDocument):
     charCountResults = EmbeddedDocumentField('ResCharSegmentCount')
     wordCountResults = EmbeddedDocumentField('ResWordSegmentCount')
     punctCountResults = EmbeddedDocumentField('ResPunctSegmentCount')
     citationCountResults = EmbeddedDocumentField('ResCitationSegmentCount')
 
 
-class Tables(Document):
+class Tables(EmbeddedDocument):
     count = IntField()
     tablesList = EmbeddedDocumentListField('Table')
 
 
-class Table(Document):
+class Table(EmbeddedDocument):
     tableIndex = IntField()
     tableRowDim = IntField()
     tableCodDim = IntField()
     tableDescription = StringField()
 
 
-class Pictures(Document):
+class Pictures(EmbeddedDocument):
     count = IntField()
     picturesList = EmbeddedDocumentListField('Picture')
 
 
-class Picture(Document):
+class Picture(EmbeddedDocument):
     pictureIndex = IntField()
     pictureDescription = StringField()
 
 
-class Subsection(Document):
+class Subsection(EmbeddedDocument):
     title = StringField()
     text = StringField()
     stopFilteredText = EmbeddedDocumentField('TextVariant')
@@ -67,7 +67,7 @@ class Subsection(Document):
     subsubsection = ListField()
 
 
-class Text(Document):
+class Text(EmbeddedDocument):
     title = StringField()
     text = StringField()
     stopFilteredText = EmbeddedDocumentField('TextVariant')
@@ -80,35 +80,35 @@ class Text(Document):
 
 
 
-class Reference(Document):
+class Reference(EmbeddedDocument):
     referenceIndex = IntField()
     referenceName = StringField()
     referenceAuthor = StringField()
     referenceYear = StringField()
 
 
-class References(Document):
+class References(EmbeddedDocument):
     count = IntField()
     referencesList = EmbeddedDocumentListField('Reference')
 
 
-class University(Document):
+class University(EmbeddedDocument):
     university_universityName = StringField()
     university_universityCountry = StringField()
 
 
-class Author(Document):
+class Author(EmbeddedDocument):
     authorName = StringField()
     authorIndex = IntField()
     university = EmbeddedDocumentField('University')
 
 
-class Authors(Document):
+class Authors(EmbeddedDocument):
     count = IntField()
     authorList = EmbeddedDocumentListField('Author')
 
 
-class Abstract(Document):
+class Abstract(EmbeddedDocument):
     title = StringField()
     text = StringField()
     stopFilteredText = EmbeddedDocumentField('TextVariant')
@@ -116,7 +116,7 @@ class Abstract(Document):
     metrik = EmbeddedDocumentField('Metric', null = True)
 
 
-class Metadata(Document):
+class Metadata(EmbeddedDocument):
     keywords = ListField()
     yearOfArticle = IntField()
     category = StringField()
@@ -141,4 +141,3 @@ class Paper(Document):
     authors = EmbeddedDocumentField('Authors')
     references = EmbeddedDocumentField('References')
     text = EmbeddedDocumentListField('Text')
-

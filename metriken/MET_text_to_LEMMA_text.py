@@ -9,26 +9,26 @@ wordnet_lemmatizer = WordNetLemmatizer()
 
 def lemmatize_Paper(paper):
     # Abstract
-    for index,section in enumerate(paper.abstract):
-        print("leammtized:" + str(paperIsRehashed(section)))
+    for section in paper.abstract:
+        #print("leammtized:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            print('not Lemmatized')
-            lemmatizedText= TextVariant.objects.create(text=lemmatize_text_segment(section.text),method=method)
-            paper.abstract[index].lemmatizedText = (lemmatizedText)
+            #print('not Lemmatized')
+            lemmatizedText= TextVariant(text=lemmatize_text_segment(section.text),method=method)
+            section.lemmatizedText = lemmatizedText
 
     #Text
-    for indexSection,section in enumerate(paper.text):
-        print("leammtized:" + str(paperIsRehashed(section)))
+    for section in paper.text:
+        #print("leammtized:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            lemmatizedText = TextVariant.objects.create(text=lemmatize_text_segment(section.text), method=method)
-            paper.text[indexSection].lemmatizedText = (lemmatizedText)
+            lemmatizedText = TextVariant(text=lemmatize_text_segment(section.text), method=method)
+            section.lemmatizedText = lemmatizedText
 
         #Subtext
-        for indexSubsection,subsection in enumerate(section.subsection):
-            print("leammtized:"+str(paperIsRehashed(section)))
+        for subsection in section.subsection:
+            #print("leammtized:"+str(paperIsRehashed(section)))
             if not paperIsRehashed(section):
-                lemmatizedText = TextVariant.objects.create(text=lemmatize_text_segment(subsection.text), method=method)
-                paper.text[indexSection].subsection[indexSubsection].lemmatizedText = (lemmatizedText)
+                lemmatizedText = TextVariant(text=lemmatize_text_segment(subsection.text), method=method)
+                subsection.lemmatizedText = (lemmatizedText)
     paper.save()
 
 

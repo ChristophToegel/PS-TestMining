@@ -6,29 +6,29 @@ method="nltk stopwordlist: english"
 
 def removeStopwords(paper):
     # Abstract
-    for index,section in enumerate(paper.abstract):
-        print("stopFiltered:" + str(paperIsRehashed(section)))
+    for section in paper.abstract:
+        #print("stopFiltered:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            print('NotstopFiltered')
-            print(getStopwordsForTextsection(section.text))
-            stopWordFilteredText_String = TextVariant.objects.create(text=getStopwordsForTextsection(section.text),method=method)
-            paper.abstract[index].stopFilteredText = (stopWordFilteredText_String)
+            #print('NotstopFiltered')
+            #print(getStopwordsForTextsection(section.text))
+            stopWordFilteredText_String = TextVariant(text=getStopwordsForTextsection(section.text),method=method)
+            section.stopFilteredText = stopWordFilteredText_String
 
     #Text
-    for indexSection,section in enumerate(paper.text):
-        print("stopFiltered:" + str(paperIsRehashed(section)))
+    for section in paper.text:
+        #print("stopFiltered:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            stopWordFilteredText_String = TextVariant.objects.create(text=getStopwordsForTextsection(section.text), method=method)
-            paper.text[indexSection].stopFilteredText = (stopWordFilteredText_String)
+            stopWordFilteredText_String = TextVariant(text=getStopwordsForTextsection(section.text), method=method)
+            section.stopFilteredText = stopWordFilteredText_String
 
         #Subtext
-        for indexSubsection,subsection in enumerate(section.subsection):
-            print("stopFiltered:"+str(paperIsRehashed(subsection)))
+        for subsection in section.subsection:
+            #print("stopFiltered:"+str(paperIsRehashed(subsection)))
             if not paperIsRehashed(subsection):
-                stopWordFilteredText_String = TextVariant.objects.create(text=getStopwordsForTextsection(subsection.text), method=method)
-                print ("String hier")
-                print (stopWordFilteredText_String)
-                paper.text[indexSection].subsection[indexSubsection].stopFilteredText = (stopWordFilteredText_String)
+                stopWordFilteredText_String = TextVariant(text=getStopwordsForTextsection(subsection.text), method=method)
+                #print ("String hier")
+                #print (stopWordFilteredText_String)
+                subsection.stopFilteredText = stopWordFilteredText_String
     paper.save()
 
 #Stopwortliste nltk(english) word to lowercase

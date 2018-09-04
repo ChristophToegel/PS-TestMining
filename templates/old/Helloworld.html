@@ -3,10 +3,14 @@
 
 {% block body %}
 
+    <p>Abstract Metriken</p>
      {% for paper in paperlist %}
-         {{ paper.abstract.metrik.charCountResults.charCountWhiteSpace }}
+         {% for abstract in paper.abstract %}
+            <ul>{{ abstract.metrik.charCountResults.charCountWhiteSpace }}</ul>
+             <ul>{{ abstract.metrik.charCountResults.charCountNoWhiteSpace }}</ul>
+             {% endfor %}
     {% endfor %}
-
+    <hr>
 
     {% for paper in paperlist %}
     <ul>{{ paper }} hinzugefügt. Titel= {{ paper.title }}</ul>
@@ -14,8 +18,6 @@
     <hr>
     {% for paper in paperlist %}
     <li>
-         <ul>{{ paper.abstract.title }}</ul>
-        <ul>{{ paper.abstract.text }}</ul>
      <ul>{{ paper.abstract.stemmedText.text}}</ul>
     <ul>Text:</ul>
         {% for text in paper.text %}
