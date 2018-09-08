@@ -44,7 +44,7 @@ def showResults(request):
 
 def readJsonFiles(request):
     # loads all Json files....
-    readpath = "./output20"
+    readpath = "./output"
     onlyOne = False
     counter=0
     for filename in listdir(readpath):
@@ -69,8 +69,7 @@ def readJsonFiles(request):
                                                           'universityCountry'])))
                     #authors = Authors.objects.create(count=paperJson['authors']['count'], authorList=arrayAutoren)
                 else:
-                    paperDB.authors.count = 0
-                    paperDB.authors.authorList = []
+                    paperDB.authors = Authors(count=0, authorList=[])
 
                 # metadata
                 if paperJson['metaData']:
@@ -110,8 +109,8 @@ def readJsonFiles(request):
                                                                         referenceAuthor=reference['referenceAuthor'],
                                                                         referenceYear=str(reference['referenceYear'])))
                 else:
-                    paperDB.references.referencesList = []
-                    paperDB.references.count = 0
+                    paperDB.references = References(referencesList=[], count=0)
+
 
                 # createText todo tabellen und bilder an models anpassen!
                 paperDB.text= []
