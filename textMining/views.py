@@ -33,8 +33,11 @@ def calculateFreqWords(request):
 def showStartPage(request):
     return render(request, 'startseite.html')
 
+#hier alles was benötigt wird rein, wird bei url:http://127.0.0.1:8000/textMining/vergleich/ aufgerufen
 def showVergleichPage(request):
-    return render(request, 'vergleich.html')
+    categories = Paper.objects.distinct('metaData.category')
+    context = {'categories': categories}
+    return render(request, 'vergleich.html',context)
 
 #+def showUploadArea(request):
 #    return render(request, 'upload.html')
@@ -237,6 +240,7 @@ def uploadImprovedPaper(request):
 
         return JsonResponse(response)
 
+#wird bei keiner url aufgefufen und auch von keiner Methode in views
 def getCategories(request):
     print('categorien')
     print(Paper.objects.distinct('metaData.category'))
