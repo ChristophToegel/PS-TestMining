@@ -2,22 +2,27 @@
 {% block title %}Ergebnis{% endblock %}
 
 {% block body %}
+    <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">Ergebnis </h1>
-        <p>Im Folgenden sehen Sie Analyseauswertung ihrer gewählten Korpora</p>
+        <p>Im Folgenden sehen Sie Analyseauswertung Ihrer gewählten Korpora.</p>
     </div>
 
-    <div class="col-lg-6">
-        <h4>Die häufigsten Wörter aus Korpus ...</h4>
-        <!-- Tagcloud-->
-
+    <div class="col-lg-12">
+        <h3>Basic Metrics</h3>
     </div>
     <div class="col-lg-6">
         <h4>Die häufigsten Wörter aus Korpus ...</h4>
         <!-- Tagcloud-->
+
+    </div>
+    <div class="col-lg-6">
+        <h4>Die häufigsten Wörter aus Korpus ...</h4>
+        <!-- Tagcloud-->
     </div>
 
-    <div class="col-lg-6">
+    <!-- durchschnittliche Wortlänge -->
+    <div class="col-lg-6 result">
         <h4>durchschnittliche Wortlänge</h4>
         <table>
             <tr>
@@ -34,7 +39,7 @@
             </tr>
         </table>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-6 result">
         <h4>durchschnittliche Wortlänge</h4>
         <table>
             <tr>
@@ -44,12 +49,165 @@
                 <th>Varianz</th>
             </tr>
             <tr>
-                <td>8.1 Zeichen</td>
+                <td>7.3 Zeichen</td>
                 <td>7 Zeichen</td>
                 <td>9 Zeichen</td>
                 <td>4.3 Zeichen</td>
             </tr>
         </table>
+    </div>
+
+    <!-- durchschnittliche Satzlänge -->
+    <div class="col-lg-6 result">
+        <h4>durchschnittliche Satzlänge</h4>
+        <table>
+            <tr>
+                <th>Ø Satzlänge</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>7.3 Wörter</td>
+                <td>7 Wörter</td>
+                <td>9 Wörter</td>
+                <td>4.3 Wörter</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>durchschnittliche Satzlänge</h4>
+        <table>
+            <tr>
+                <th>Ø Satzlänge</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>8.1 Wörter</td>
+                <td>7 Wörter</td>
+                <td>9 Wörter</td>
+                <td>4.3 Wörter</td>
+            </tr>
+        </table>
+    </div>
+
+    <!--Type-Token Ratio -->
+    <div class="col-lg-6 result">
+        <h4>Größe/Dichte des Wortschatzes - Type Token Ratio (TTR)</h4>
+        <p>Die TTR Ihres Korpus beträgt: </p>
+        <p class="bordered">0.89</p>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>Größe/Dichte des Wortschatzes - Type Token Ratio (TTR)</h4>
+        <p>Die TTR Ihres Korpus beträgt: </p>
+        <p class="bordered">0.54</p>
+    </div>
+
+    <!-- Anzahl der Satzzeichen -->
+    <div class="col-lg-6 result">
+        <h4>Anzahl der Satzzeichen</h4>
+        <table>
+            <tr>
+                <th>Absolut</th>
+                <th>Ø Satzzeichen pro Paper</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>132.434 Satzzeichen</td>
+                <td>321.6 Satzzeichen</td>
+                <td>350 Satzzeichen</td>
+                <td>354 Satzzeichen</td>
+                <td>5.89 Satzzeichen</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>Anzahl der Satzzeichen</h4>
+        <table>
+            <tr>
+                <th>Absolut</th>
+                <th>Ø Satzzeichen pro Paper</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>132.434 Satzzeichen</td>
+                <td>321.6 Satzzeichen</td>
+                <td>350 Satzzeichen</td>
+                <td>354 Satzzeichen</td>
+                <td>5.89 Satzzeichen</td>
+            </tr>
+        </table>
+    </div>
+
+    <!--Zeichenanzahl -->
+    <div class="col-lg-6 result">
+        <h4>Zeichenanzahl</h4>
+        <p>Die absolute Zeichenanzahl Ihres Korpus beträgt: </p>
+        <p class="bordered">1.008.854 Zeichen</p>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>Zeichenanzahl</h4>
+        <p>Die absolute Zeichenanzahl Ihres Korpus beträgt: </p>
+        <p class="bordered">5.985.349.653 Zeichen</p>
+    </div>
+
+    <!--Wortanzahl -->
+    <div class="col-lg-6 result">
+        <h4>Wortanzahl</h4>
+        <p>Die absolute Wortanzahl Ihres Korpus beträgt: </p>
+        <p class="bordered">648.986 Wörter</p>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>Wortanzahl</h4>
+        <p>Die absolute Wortanzahl Ihres Korpus beträgt: </p>
+        <p class="bordered">209.865 Wörter</p>
+    </div>
+
+    <!--Most Present Words-->
+    <div class="col-lg-6 result">
+        <h4>Most Present Words</h4>
+        <p>Die Top 10 Most Present Words nach Rang sortiert.</p>
+        <ul>
+            <li>hello</li>
+            <li>hi</li>
+            <li>bye</li>
+            <li>tree</li>
+            <li>science</li>
+            <li>refernce</li>
+            <li>abstract</li>
+            <li>paper</li>
+            <li>world</li>
+            <li>common</li>
+        </ul>
+    </div>
+    <div class="col-lg-6 result">
+        <h4>Most Present Words</h4>
+        <p>Die Top 10 Most Present Words nach Rang sortiert.</p>
+        <ul>
+            <li>hello</li>
+            <li>hi</li>
+            <li>bye</li>
+            <li>tree</li>
+            <li>science</li>
+            <li>refernce</li>
+            <li>abstract</li>
+            <li>paper</li>
+            <li>world</li>
+            <li>common</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="col-lg-12">
+        <h3>Scientific Metrics</h3>
+    </div>
     </div>
 
 {% endblock %}

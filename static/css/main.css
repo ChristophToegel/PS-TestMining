@@ -1,9 +1,23 @@
-h1, h3, h4 {
+h1, h3 {
     color: rgba(29, 168, 124, 1);
 }
 
 p{
     font-size: 1.2vw !important;
+}
+
+a {
+    color: rgb(29, 168, 124) !important;
+}
+
+label {
+    color: rgba(29, 168, 124, 1);
+    font-size: large;
+}
+
+.navbar-brand{
+    font-size: 26px !important;
+    font-weight: bold;
 }
 
 table{
@@ -14,6 +28,7 @@ table{
 td, th {
     border: 1px solid #ddd;
     padding: 8px;
+    text-align: center;
 }
 
 tr:nth-child(even){background-color: #f2f2f2;}
@@ -23,9 +38,9 @@ tr:hover {background-color: #ddd;}
 th {
     padding-top: 12px;
     padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
+    background-color: rgba(29, 168, 124, 0.8) ;
     color: white;
+    font-weight: bold;
 }
 
 .graphic {
@@ -112,5 +127,18 @@ button {
     border-color: rgba(29, 168, 124, 1) !important;
     background-color: rgba(29, 168, 124, 0.5) !important;
     border-width: thick;
+}
+
+.result{
+    margin-top: 3%;
+}
+
+.bordered{
+    border-style: solid;
+    border-color: rgba(29, 168, 124, 1);
+    border-width: 3px;
+    text-align: center;
+    border-radius: 9px;
+
 }
 

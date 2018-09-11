@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from .models import Metric,Text, Subsection, Reference, References, Paper, Author, Metadata, Authors, University, Abstract, \
     Picture, Pictures, Table, Tables, ResCitationSegmentCount, ResCharSegmentCount
 import json
@@ -11,6 +11,7 @@ import metriken
 from jsonschema import Draft4Validator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.http import HttpResponse
 import ast
 
 def calculateMetriken(request):
@@ -240,14 +241,4 @@ def uploadImprovedPaper(request):
 
         return JsonResponse(response)
 
-#wird bei keiner url aufgefufen und auch von keiner Methode in views
-def getCategories(request):
-    print('categorien')
-    print(Paper.objects.distinct('metaData.category'))
-    categories = Paper.objects.dinstinct('metaData.category')
-    context = {'categories': categories}
-    return render(request, 'vergleich.html', context)
-
-sizes = [10, 12, 14, 16, 18, 20]
-tags = ["one", "two", "three"]
 
