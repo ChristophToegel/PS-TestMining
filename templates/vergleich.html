@@ -23,8 +23,10 @@
                                             <label>Kategorie</label>
                                             <select class="form-control">
                                                 <option>-</option>
-                                                <option>Biology</option>
-                                                <option>IT</option>
+                                                {% for kategorie in categories %}
+                                                    console.log(kategorie)
+                                                    <option>{{ kategorie }}</option>
+                                                {% endfor %}
 
                                             </select>
                                         </div>

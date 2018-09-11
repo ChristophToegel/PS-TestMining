@@ -2,10 +2,54 @@
 {% block title %}Ergebnis{% endblock %}
 
 {% block body %}
-<div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Ergebnis </h1>
-                </div>
-                <!-- /.col-lg-12 -->
-</div>
+    <div class="col-lg-12">
+        <h1 class="page-header">Ergebnis </h1>
+        <p>Im Folgenden sehen Sie Analyseauswertung ihrer gewählten Korpora</p>
+    </div>
+
+    <div class="col-lg-6">
+        <h4>Die häufigsten Wörter aus Korpus ...</h4>
+        <!-- Tagcloud-->
+
+    </div>
+    <div class="col-lg-6">
+        <h4>Die häufigsten Wörter aus Korpus ...</h4>
+        <!-- Tagcloud-->
+    </div>
+
+    <div class="col-lg-6">
+        <h4>durchschnittliche Wortlänge</h4>
+        <table>
+            <tr>
+                <th>Ø Wortlänge</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>13.4 Zeichen</td>
+                <td>16 Zeichen</td>
+                <td>14.5 Zeichen</td>
+                <td>2.96 Zeichen</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-6">
+        <h4>durchschnittliche Wortlänge</h4>
+        <table>
+            <tr>
+                <th>Ø Wortlänge</th>
+                <th>Modus</th>
+                <th>Median</th>
+                <th>Varianz</th>
+            </tr>
+            <tr>
+                <td>8.1 Zeichen</td>
+                <td>7 Zeichen</td>
+                <td>9 Zeichen</td>
+                <td>4.3 Zeichen</td>
+            </tr>
+        </table>
+    </div>
+
 {% endblock %}

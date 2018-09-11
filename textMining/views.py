@@ -236,3 +236,14 @@ def uploadImprovedPaper(request):
             #response['errors'] = errors
 
         return JsonResponse(response)
+
+def getCategories(request):
+    print('categorien')
+    print(Paper.objects.distinct('metaData.category'))
+    categories = Paper.objects.dinstinct('metaData.category')
+    context = {'categories': categories}
+    return render(request, 'vergleich.html', context)
+
+sizes = [10, 12, 14, 16, 18, 20]
+tags = ["one", "two", "three"]
+
