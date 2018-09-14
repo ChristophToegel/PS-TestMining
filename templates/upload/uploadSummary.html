@@ -4,7 +4,7 @@
 {% block body %}
 
     <div class="container">
-    <h5><span id="validPaperNum">{{ validPaper|length }} </span> Paper wurden zur DB hinzugefügt:</h5>
+    <h5><span id="validPaperNum">{{ validPaper|length }} </span> valide Paper </h5>
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
             aria-expanded="false" aria-controls="collapseExample">
         Details
@@ -13,7 +13,7 @@
         <table id="table" class="table table-bordered">
             <thead>
             <tr>
-                <th>Datenbank</th>
+                <th>Valide</th>
                 <th>Name</th>
             </tr>
             </thead>
@@ -30,9 +30,8 @@
     <hr>
     {% if invalidPaper %}
         <div id="invalidPaper">
+            <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen und Fehlerhafe Paper ignorieren</a>
             <h5><span id="invalidPaperNum">{{ invalidPaper|length }}</span> Nicht valide Paper:</h5>
-            <a href="{% url "home" %}" class="btn btn-primary" role="button">Fehlerhafe Paper ignorieren</a>
-
             {% for paper in invalidPaper %}
                 <div class="jumbotron">
                     <form id="submitSingelPaper" action="{% url "improvedPaper" %}" method="POST">
@@ -78,7 +77,7 @@
                 </div>
             </div>
     {% else %}
-        <a href="{% url "home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>
+        <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen</a>
     {% endif %}
 
     </div>
@@ -119,7 +118,8 @@
                         $('#validPaperNum').html(parseInt($('#validPaperNum').html()) + 1);
                         if ($('#invalidPaperNum').html() == 0) {
                             $('#invalidPaper').remove();
-                            $('hr').after('<a href="{% url "home" %}" class="btn btn-primary" role="button">Weiter zur Startseite</a>')
+                            //
+                            $('hr').after('<a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen</a>')
                         }
                         //invalidPaper -1; vaild+1; invalidPaper==0 dann weg!
                     } else {

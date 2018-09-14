@@ -15,22 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from textMining import views
+from textMining.views import uploadviews,generalviews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path('textMining/<int:pk>/', views.changeCategory),
 
-    path('textMining/readPaper/', views.readJsonFiles),
-    path('textMining/processPaper/', views.processPaper),
-    path('textMining/calculateMetriken/', views.calculateMetriken),
+    path('textMining/readPaper/', generalviews.readJsonFiles),
+    path('textMining/processPaper/', generalviews.processPaper),
+    path('textMining/calculateMetriken/', generalviews.calculateMetriken),
 
-    path('textMining/uploadImprovedPaperAjax/', views.uploadImprovedPaper, name="improvedPaper"),
+    path('textMining/calculateFreqWords/', generalviews.calculateFreqWords),
 
-    path('textMining/calculateFreqWords/', views.calculateFreqWords),
+    path('textMining', generalviews.showStartPage, name='home'),
+    path('textMining/vergleich/', generalviews.showVergleichPage, name='vergleich'),
+    path('textMining/results/', generalviews.showResults, name='results'),
 
-    path('textMining', views.showStartPage, name='home'),
-    path('textMining/vergleich/', views.showVergleichPage, name='vergleich'),
-    path('textMining/upload/', views.uploadFiles, name='upload'),
-    path('textMining/results/', views.showResults, name='results'),
+    path('textMining/upload/', uploadviews.uploadFiles, name='upload'),
+    path('textMining/uploadImprovedPaperAjax/', uploadviews.uploadImprovedPaper, name="improvedPaper"),
+    path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload')
 ]

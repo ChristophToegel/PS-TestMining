@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 from django.shortcuts import render, render_to_response
-from .models import Metric,Text, Subsection, Reference, References, Paper, Author, Metadata, Authors, University, Abstract, \
+from textMining.models import Metric,Text, Subsection, Reference, References, Paper, Author, Metadata, Authors, University, Abstract, \
     Picture, Pictures, Table, Tables, ResCitationSegmentCount, ResCharSegmentCount
 import json
 from django.shortcuts import redirect
@@ -13,6 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.http import HttpResponse
 import ast
+from textMining.saveFile import savePaper
+
+#currentJsonfiles=[]
 
 def calculateMetriken(request):
     papers = Paper.objects.all()
@@ -40,8 +43,6 @@ def showVergleichPage(request):
     context = {'categories': categories}
     return render(request, 'vergleich.html',context)
 
-#+def showUploadArea(request):
-#    return render(request, 'upload.html')
 
 def showResults(request):
     return render(request, 'ergebnis.html')
@@ -56,7 +57,8 @@ def readJsonFiles(request):
             if filename != ".DS_Store": #file.endswith('.json')
                 file = open(join(readpath, filename), 'r', encoding='utf-8', errors="ignore")
                 paperJson = json.load(file)
-                paperDB=Paper()
+                paper=savePaper(paperJson)
+                '''paperDB=Paper()
                 paperDB.title=paperJson['title']
                 print(file)
                 print(counter)
@@ -152,7 +154,7 @@ def readJsonFiles(request):
                                             #formula=textsection['formula']
                                             ))
 
-                paperDB.save()
+                paperDB.save()'''
                 print("Paper saved!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 counter+=1
         onlyOne=False
@@ -177,12 +179,13 @@ def processPaper(request):
     context = {'paperlist': paperlist}
     return render(request, 'old/Helloworld.html', context)
 
-
+'''
 def uploadFiles(request):
     if request.method == 'GET':
         return render(request, 'upload.html')
 
     if request.method == 'POST':
+        global currentJsonfiles
         #print(request.FILES.getlist('JsonPaper'))
         validPaper = []
         invalidPaper = []
@@ -193,6 +196,7 @@ def uploadFiles(request):
             print(uploadfile.name)
             jsondata=json.loads(uploadfile.read().decode('utf-8'))
             #print(jsondata)
+            currentJsonfiles.append(jsondata)
             if v.is_valid(jsondata):
                 validPaper.append(uploadfile)
                 print("validFile:"+uploadfile.name)
@@ -202,19 +206,34 @@ def uploadFiles(request):
                 errors=[]
                 for error in sorted(v.iter_errors(jsondata), key=str):
                     errors.append(error)
-                    print(error)
+                    #print(error)
                 #print(json.dumps(jsondata))
                 invalidPaper.append({'filename':uploadfile,'data': json.dumps(jsondata),'errors':errors})
             #save the paper
             #fs = FileSystemStorage()
             #filename = fs.save(myfile.name, myfile)
 
-        context={'validPaper':validPaper,'invalidPaper':invalidPaper}
+        #currentJsonfiles=request.FILES.getlist('JsonPaper')
+        testfiles=None
+        context={'validPaper':validPaper,'invalidPaper':invalidPaper,'filestest':testfiles}
         return render(request, 'uploadSummary.html', context)
+
+def completeUpload(request):
+    if request.method == 'GET':
+        global currentJsonfiles
+        print("Jsonfiles")
+        print(currentJsonfiles)
+        for jsonfile in currentJsonfiles:
+            print(jsonfile)
+        currentJsonfiles=[]
+        print("Alle files sollen jetzt gespeichert werden")
+        return render(request, 'ergebnis.html')
+
 
 @csrf_exempt
 def uploadImprovedPaper(request):
     if request.method == 'POST':
+        global currentJsonfiles
         print(request.POST)
         filename=request.POST.get('filename')
         response = {}
@@ -228,6 +247,7 @@ def uploadImprovedPaper(request):
             print("validFile:" + filename)
             response['valid'] = 'true'
             response['filename'] = filename
+            currentJsonfiles.append(jsondata)
         else:
             print("invalidFile:" + filename)
             response['valid'] = 'false'
@@ -241,4 +261,4 @@ def uploadImprovedPaper(request):
 
         return JsonResponse(response)
 
-
+'''
