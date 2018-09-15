@@ -8,52 +8,200 @@
             <h3>Create your Corpus!</h3>
             <p>Stellen Sie sich an dieser Stelle die Korpora zusammen, die Sie gerne analysieren möchten. </p> <br>
         </div>
+
+
+        <!--linke Spalte: Korpus 1-->
         <div class="col-lg-6">
             <form role="form">
                 <div class="form-group">
+                    <!--Quelle-->
+                    <label>Wählen Sie eine Quelle:</label>
+                    <select class="form-control">
+                        <option>Omics-Journals</option>
+                        <option>Eigener Upload</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <!--Kategorie-->
                     <label>Kategorie</label>
                     <select class="form-control">
-                        <option>-</option>
                         {% for kategorie in categories %}
                             <option>{{ kategorie }}</option>
                         {% endfor %}
 
                     </select>
                 </div>
-             <div class="form-group">
+                <div class="form-group">
+                 <!--Journals-->
                  <label>Journals</label>
                  <br>
                  <form>
                      <input type="Checkbox"> Testvalue<br>
                  </form>
-             </div>
+                </div>
+
+            <!--Autor-Freitextsuche-->
+            <div class="form-group">
+                <label>Möchten Sie nach einem bestimmten Autor filtern?</label>
+                <form>
+                    <input type="search" list="authors" class="freitextsuche">
+                        <datalist id="authors">
+                             <option value="Heinecke">
+                             <option value="Isemann">
+                        </datalist>
+                </form>
+            </div>
+
+                <div class="form-group">
+                    <!--Länder-->
+                    <label>Möchten Sie ihr Korpus nach einem Land filtern?</label>
+                    <select class="form-control">
+                        <option>Germany</option>
+                        <option>Italy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <!--Impact Factor-->
+                    <label>Wollen Sie Ihr Korpus auf einen bestimmten Impact-Factor reduzieren?</label>
+                    <select class="form-control">
+                        <option>-</option>
+                        <option>größer als 2.5</option> <!--#TODO Mittelwert berechnen!-->
+                        <option>kleiner als 2.5</option>
+                    </select>
+                </div>
+
+                        <!--Keyword-Freitextsuche-->
+            <div class="form-group">
+                <label>Möchten Sie nach einem bestimmten Keyword filtern?</label>
+                <form>
+                    <input type="search" list="authors" class="freitextsuche">
+                        <datalist id="keywords">
+                             <option value="it">
+                             <option value="computer science">
+                        </datalist>
+                </form>
+            </div>
+
+                <div class="form-group">
+                    <!--Texteinheiten-->
+                    <label>Möchten Sie nur bestimmte Texteinheiten analysieren?</label>
+                    <select class="form-control">
+                        <option>alle</option>
+                        <option>Abstract</option>
+                        <option>Introduction</option>
+                        <option>Discussion</option>
+                        <option>Conclusion</option>
+                    </select>
+                </div>
+
             </form>
+
+            <p>Ihr Korpus besteht aus folgenden Papern:</p>
+            <ul>
+                <li>Paper xaz</li>
+                <li>Paper abc</li>
+            </ul>
         </div>
 
-     <div class="col-lg-6">
-         <form role="form">
-             <div class="form-group">
-                 <label>Kategorie</label>
-                 <select class="form-control">
-                     <option>-</option>
-                     {% for kategorie in categories %}
-                         <option>{{ kategorie }}</option>
-                     {% endfor %}
-                 </select>
-             </div>
-             <div class="form-group">
+
+    <!--rechte Spalte: Korpus 2 -->
+
+            <div class="col-lg-6">
+            <form role="form">
+                <div class="form-group">
+                    <!--Quelle-->
+                    <label>Wählen Sie eine Quelle:</label>
+                    <select class="form-control">
+                        <option>Omics-Journals</option>
+                        <option>Eigener Upload</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <!--Kategorie-->
+                    <label>Kategorie</label>
+                    <select class="form-control">
+                        {% for kategorie in categories %}
+                            <option>{{ kategorie }}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+                <div class="form-group">
+                 <!--Journals-->
                  <label>Journals</label>
                  <br>
                  <form>
                      <input type="Checkbox"> Testvalue<br>
                  </form>
-             </div>
-             <div>
-                 <a href="{% url 'results' %}" class="btn btn-default">
-                     Analysiere
-                 </a>
-             </div>
-         </form>
-     </div>
+                </div>
+
+            <!--Autor-Freitextsuche-->
+            <div class="form-group">
+                <label>Möchten Sie nach einem bestimmten Autor filtern?</label>
+                <form>
+                    <input type="search" list="authors" class="freitextsuche">
+                        <datalist id="authors">
+                             <option value="Heinecke">
+                             <option value="Isemann">
+                        </datalist>
+                </form>
+            </div>
+
+                <div class="form-group">
+                    <!--Länder-->
+                    <label>Möchten Sie ihr Korpus nach einem Land filtern?</label>
+                    <select class="form-control">
+                        <option>Germany</option>
+                        <option>Italy</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <!--Impact Factor-->
+                    <label>Wollen Sie Ihr Korpus auf einen bestimmten Impact-Factor reduzieren?</label>
+                    <select class="form-control">
+                        <option>-</option>
+                        <option>größer als 2.5</option>
+                        <option>kleiner als 2.5</option>
+                    </select>
+                </div>
+
+                        <!--Keyword-Freitextsuche-->
+            <div class="form-group">
+                <label>Möchten Sie nach einem bestimmten Keyword filtern?</label>
+                <form>
+                    <input type="search" list="authors" class="freitextsuche">
+                        <datalist id="keywords">
+                             <option value="it">
+                             <option value="computer science">
+                        </datalist>
+                </form>
+            </div>
+
+                <div class="form-group">
+                    <!--Texteinheiten-->
+                    <label>Möchten Sie nur bestimmte Texteinheiten analysieren?</label>
+                    <select class="form-control">
+                        <option>alle</option>
+                        <option>Abstract</option>
+                        <option>Introduction</option>
+                        <option>Discussion</option>
+                        <option>Conclusion</option>
+                    </select>
+                </div>
+
+            </form>
+                <p>Ihr Korpus besteht aus folgenden Papern:</p>
+            <ul>
+                <li>Paper xaz</li>
+                <li>Paper abc</li>
+            </ul>
+                <div>
+                    <a href="{% url 'results' %}" class="btn btn-default">
+                        Analysiere
+                    </a>
+                </div>
+        </div>
     </div>
 {% endblock %}
