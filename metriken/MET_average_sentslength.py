@@ -4,27 +4,27 @@ import re
 method="sentsCount"
 
 
-def punctation_count_per_section_Paper(paper):
+def sentencelength_average_per_section_Paper(paper):
     # Abstract
-    for index,section in enumerate(paper.abstract):
-        print("sentsCount" + str(paperIsRehashed(section)))
+    for section in paper.abstract:
+        #print("sentsCount" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            sentsCount= ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
-            paper.abstract[index].metrik.wordCountResults = sentsCount
+            #sentsCount= ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
+            section.metrik.sentslengthAverage = MET_sents_count(section.text)
 
     #Text
-    for indexSection,section in enumerate(paper.text):
-        print("sentsCount" + str(paperIsRehashed(section)))
+    for section in paper.text:
+        #print("sentsCount" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            sentsCount = ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
-            paper.abstract[index].metrik.wordCountResults = sentsCount
+            #sentsCount = ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
+            section.metrik.sentslengthAverage = MET_sents_count(section.text)
 
         #Subtext
-        for indexSubsection,subsection in enumerate(section.subsection):
+        for subsection in section.subsection:
             print("sentsCount:"+str(paperIsRehashed(section)))
             if not paperIsRehashed(section):
-                sentsCount = ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
-                paper.abstract[index].metrik.wordCountResults = sentsCount
+                #sentsCount = ResWordSegmentCount.objects.create(sentsCount=MET_sents_count(section))
+                subsection.metrik.sentslengthAverage = MET_sents_count(section.text)
     paper.save()
 
 
@@ -33,6 +33,7 @@ def MET_sents_count(text):
     #Remove quotes
     sents = text.split('.')
     avg_len = sum(len(x.split()) for x in sents) / len(sents)
+    return avg_len
 
 
 

@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('textMining/readPaper/', generalviews.readJsonFiles),
     path('textMining/processPaper/', generalviews.processPaper),
+
     path('textMining/calculateMetriken/', generalviews.calculateMetriken),
 
     path('textMining/calculateFreqWords/', generalviews.calculateFreqWords),

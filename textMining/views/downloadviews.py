@@ -9,5 +9,6 @@ from textMining.saveFile import savePaper
 
 def downloadResults(request):
     if request.method == 'GET':
-        response = HttpResponse("test",mimetype='application/json')
+        response = HttpResponse("test",content_type='application/json')
         response['Content-Disposition'] = 'attachment; filename="ergebnisse.json"'
+        return response

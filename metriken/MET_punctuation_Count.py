@@ -3,27 +3,27 @@ import re
 
 method="citationcount"
 
-def citation_count_per_section_Paper(paper):
+def punctuation_count_per_section_Paper(paper):
     # Abstract
-    for index,section in enumerate(paper.abstract):
+    for section in paper.abstract:
         print("punctCount:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            punctCount= ResPunctSegmentCount.objects.create(punctCount=MET_punctuation_count(section))
-            paper.abstract[index].metrik.punctCountResults = punctCount
+            punctCount= ResPunctSegmentCount(punctCount=MET_punctuation_count(section.text))
+            section.metrik.punctCountResults = punctCount
 
     #Text
-    for indexSection,section in enumerate(paper.text):
+    for section in paper.text:
         print("punctCount:" + str(paperIsRehashed(section)))
         if not paperIsRehashed(section):
-            punctCount = ResPunctSegmentCount.objects.create(punctCount=MET_punctuation_count(section))
-            paper.text[indexSection].metrik.punctCountResults = punctCount
+            punctCount = ResPunctSegmentCount(punctCount=MET_punctuation_count(section.text))
+            section.metrik.punctCountResults = punctCount
 
         #Subtext
-        for indexSubsection,subsection in enumerate(section.subsection):
+        for subsection in section.subsection:
             print("punctCount:"+str(paperIsRehashed(section)))
             if not paperIsRehashed(section):
-                punctCount = ResPunctSegmentCount.objects.create(punctCount=MET_punctuation_count(subsection))
-                paper.text[indexSection].subsection[indexSubsection].metrik.punctCountResults = punctCount
+                punctCount = ResPunctSegmentCount(punctCount=MET_punctuation_count(subsection.text))
+                subsection.metrik.punctCountResults = punctCount
     paper.save()
 
 

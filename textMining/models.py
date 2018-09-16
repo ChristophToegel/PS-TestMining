@@ -34,6 +34,7 @@ class Metric(EmbeddedDocument):
     wordCountResults = EmbeddedDocumentField('ResWordSegmentCount')
     punctCountResults = EmbeddedDocumentField('ResPunctSegmentCount')
     citationCountResults = EmbeddedDocumentField('ResCitationSegmentCount')
+    sentslengthAverage = FloatField()
 
 
 class Tables(EmbeddedDocument):
