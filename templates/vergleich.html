@@ -36,7 +36,7 @@
                  <label>Journals</label>
                  <br>
                  <form>
-                     <input type="Checkbox"> Testvalue<br>
+                     <input type="Checkbox"> {% for  journal in journals %} journal {% endfor %} <br>
                  </form>
                 </div>
 
@@ -46,8 +46,9 @@
                 <form>
                     <input type="search" list="authors" class="freitextsuche">
                         <datalist id="authors">
-                             <option value="Heinecke">
-                             <option value="Isemann">
+                            {% for author in authors %}
+                             <option>{{ author }}</option>
+                            {% endfor%}
                         </datalist>
                 </form>
             </div>
@@ -56,8 +57,9 @@
                     <!--Länder-->
                     <label>Möchten Sie ihr Korpus nach einem Land filtern?</label>
                     <select class="form-control">
-                        <option>Germany</option>
-                        <option>Italy</option>
+                        {% for country in countries %}
+                            <option>{{ country }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -68,6 +70,10 @@
                         <option>-</option>
                         <option>größer als 2.5</option> <!--#TODO Mittelwert berechnen!-->
                         <option>kleiner als 2.5</option>
+                        {% for impact in impactfactor %}
+                            <option>{{ impact }}</option>
+                        {% endfor %}
+                        <option>{{ meanimpact }}</option>
                     </select>
                 </div>
 
@@ -79,6 +85,9 @@
                         <datalist id="keywords">
                              <option value="it">
                              <option value="computer science">
+                             {% for keyword in keywords %}
+                                <option>{{ keyword }}</option>
+                            {% endfor %}
                         </datalist>
                 </form>
             </div>
