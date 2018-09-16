@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from textMining.views import uploadviews,generalviews
+from textMining.views import uploadviews, generalviews, downloadviews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('textMining/results/', generalviews.showResults, name='results'),
 
     path('textMining/upload/', uploadviews.uploadFiles, name='upload'),
+    path('textMining/results/download/', downloadviews.downloadResults, name='download'),
     path('textMining/uploadImprovedPaperAjax/', uploadviews.uploadImprovedPaper, name="improvedPaper"),
     path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload')
 ]
