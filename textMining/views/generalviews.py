@@ -37,10 +37,28 @@ def calculateFreqWords(request):
 def showStartPage(request):
     return render(request, 'startseite.html')
 
+def calculateMeanImpactFactor(impact):
+    sum = 0
+    counter = 0
+    for factor in impact:
+        sum += factor
+        counter += 1
+    mean = sum/counter
+    return mean
+
+
+
 #hier alles was benötigt wird rein, wird bei url:http://127.0.0.1:8000/textMining/vergleich/ aufgerufen
 def showVergleichPage(request):
     categories = Paper.objects.distinct('metaData.category')
-    context = {'categories': categories}
+    countries = Paper.objects.distinct('authors_authorList_university_university_universityCountry')
+    authors = Paper.objects.distinct('authors_authorList.authorName')
+    journals = Paper.objects.distinct('metaData.journalTitle')
+    impactfactor = Paper.objects.distinct('metaData.impactfactor')
+    #meanimpact = calculateMeanImpactFactor(impactfactor)
+    keywords = Paper.objects.distinct('metaData.keywords')
+    context = {'categories': categories, 'countries':countries, 'authors': authors, 'journals': journals,
+               'impactfactor': impactfactor, 'keywords':keywords}
     return render(request, 'vergleich.html',context)
 
 
