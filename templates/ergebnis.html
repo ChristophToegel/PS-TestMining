@@ -217,9 +217,13 @@
 
 
     <div>
-         <button>
-             <a href="download" download><span class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-download"></i> Download files</span></a>
-         </button>
+
+            <form action="{% url 'download' %}" method="get" target="_blank">
+                <span class="btn btn-primary btn-lg">
+                    <i class="glyphicon glyphicon-download"></i>
+                  <input type="submit" value="Download results">
+                </span>
+            </form>
     </div>
         <div class="panel-body">
      </div>
