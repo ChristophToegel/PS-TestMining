@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <!--Kategorie-->
                     <label>Kategorie</label>
-                    <select class="form-control">
+                    <select id="categorie" class="form-control">
                         {% for kategorie in categories %}
                             <option>{{ kategorie }}</option>
                         {% endfor %}
@@ -34,10 +34,12 @@
                 <div class="form-group">
                  <!--Journals-->
                  <label>Journals</label>
-                 <br>
+                    <select id="journales" class="form-control">
+                    </select>
+                 <!--<br>
                  <form>
                      <input type="Checkbox"> {% for  journal in journals %} journal {% endfor %} <br>
-                 </form>
+                 </form>-->
                 </div>
 
             <!--Autor-Freitextsuche-->
@@ -213,4 +215,35 @@
                 </div>
         </div>
     </div>
+
+    <script>
+
+     $('#categorie').change(function(event) {
+         create_post($('#categorie').val())
+     });
+
+    function create_post(categorie) {
+            console.log("create post is working!");
+            $.ajax({
+                url: "{% url "ajaxCateogrie" %}",
+                type: "POST",
+                data: {
+                    categorie: categorie
+                },
+
+                success: function (json) {
+                    console.log("response");
+                    for(categorie of json.journalnames){
+                        $('#journales').append($('<option>', {
+                            text : categorie
+                        }));
+                        console.log(categorie);
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        }
+    </script>
 {% endblock %}

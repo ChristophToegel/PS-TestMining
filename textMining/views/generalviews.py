@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
 from textMining.models import Paper, Metadata
 import json
 from django.shortcuts import redirect
@@ -45,7 +48,7 @@ def calculateMeanImpactFactor(impact):
 #hier alles was benötigt wird rein, wird bei url:http://127.0.0.1:8000/textMining/vergleich/ aufgerufen
 def showVergleichPage(request):
     categories = Paper.objects.distinct('metaData.category')
-    countries = Paper.objects.distinct('authors_authorList_university_university_universityCountry')
+    countries = Paper.objects.distinct('authors.authorList.university.university_universityCountry')
     authors = Paper.objects.distinct('authors_authorList.authorName')
     journals = Paper.objects.distinct('metaData.journalTitle')
     impactfactor = Paper.objects.distinct('metaData.impactfactor')
@@ -59,11 +62,57 @@ def showVergleichPage(request):
 
 def showResults(request):
     #1. getCorpora filterdata should bei in the request
-    corpus1 = Paper.objects.all()[0:4]
-    corpus2 = Paper.objects.all()[4:8]
-    print(Paper.objects(authors__authorList__university__university_universityCountry__icontains = 'Malaysia'))
+    corpus1 = Paper.objects(title__icontains='physics')
+    corpus2 = Paper.objects(title__icontains='speech')
     #2.calculate sum for some Metrtiken.
+    dict={'average':None,'modus':None,'median':None,'varianz':None}
+    print(len(corpus1))
+    print(len(corpus2.distinct('title')))
+    #Anzahl der Autoren
+    #Anzahl der Referenzen
+    #Anzahl unterschiedliche Universitäten
+    print("Anzahl unterschiedliche Universitäten")
+    print(len(corpus1.distinct(field='authors.authorList.university.university_universityCountry')))
+    print(len(corpus2.distinct(field='authors.authorList.university.university_universityCountry')))
+    #Anzahl der Keywords
+    print("Anzahl der Keyword")
+    print(len(corpus1.distinct('metaData.keywords')))
+    print(len(corpus2.distinct('metaData.keywords')))
+    #Häufigste Keywords
+    #print("Häufigste Keywords")
 
+    '''corpus1result=[]
+    for paper in corpus1:
+        numpictures = 0
+        numtables = 0
+        numabsaetze = 0
+        numsubabsaetze = 0
+        numtablesdesclength = 0
+        for section in paper.text:
+            numabsaetze+=1
+            numpictures+=section.pictures.count
+            numtables += section.tables.count
+            for table in section.tables.tablesList:
+                numtablesdesclength+=len(table.tableDescription.split(' '))
+            numsubabsaetze=+len(section.subsection)
+        corpus1result.append({'tables':numtables,'pictures':numpictures,'absaetze':numabsaetze,'tabledescription':numtablesdesclength,'subabsaetze':numsubabsaetze})
+    print(corpus1result)
+    #Anzahl Tabellen
+    #Anzahl Bilder
+    #Anzahl Überschriften
+    #Absätze pro Einheit
+    #Tabelle durchschnittliche Beschriftungslänge
+    #Readability
+    
+    result={'abstract':{'charcount':{'array':[],'result':{}}}}
+    #calculate Metriken
+    for paper in corpus1:
+        for section in paper.abstract:
+            result['abstract']['charcount']['array'].append(section.metrik.charCountResults.charCountNoWhiteSpace)
+    print(result['abstract']['charcount']['array'])
+    '''
+    # modus was am meisten vorkommt
+    #
     context={'corpus1':corpus1,'corpus2':corpus2}
     return render(request, 'ergebnis.html',context)
 
@@ -107,3 +156,14 @@ def processPaper(request):
     context = {'paperlist': paperlist}
     return render(request, 'old/Helloworld.html', context)
 
+
+@csrf_exempt
+def ajaxCategorie (request):
+    if request.method == 'POST':
+        categorie=request.POST.get('categorie')
+        print('get journals for categorie:'+categorie)
+        categoriePaper=Paper.objects(metaData__category__exact=categorie)
+        journalnames= categoriePaper.distinct('metaData.journalTitle')
+        print(journalnames)
+        response = {'journalnames':journalnames}
+        return JsonResponse(response)

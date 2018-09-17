@@ -29,8 +29,9 @@ def citation_count_per_section_Paper(paper):
 
 #Count punctuation without citations
 def MET_citation_count(text):
-    #(\[(\d+)(\-\d+)?\])
     # \[[^]]*\]
+    # ['doctors having a degree in internal medicine (MD or DNB', 'Int Med)'] found
+    # ValueError: invalid literal for int() with base 10: 'Int Med)'
     finding = re.findall(r"(\[[(\d+)(\-\d+)?]]*\])", text)
     quoteCount = 0
     for quote in finding:
@@ -40,8 +41,6 @@ def MET_citation_count(text):
             #print(quotes)
             while "-" in quotes: quotes.remove("-")
             #print(quotes)
-            #['doctors having a degree in internal medicine (MD or DNB', 'Int Med)'] found
-            #ValueError: invalid literal for int() with base 10: 'Int Med)'
             quoteCount += (int(quotes[1]) -int(quotes[0])) + 1
         elif "," in quote:
             quotes = (quote.split(","))

@@ -32,8 +32,12 @@ urlpatterns = [
     path('textMining/vergleich/', generalviews.showVergleichPage, name='vergleich'),
     path('textMining/results/', generalviews.showResults, name='results'),
 
+
     path('textMining/upload/', uploadviews.uploadFiles, name='upload'),
     path('textMining/results/download/', downloadviews.downloadResults, name='download'),
     path('textMining/uploadImprovedPaperAjax/', uploadviews.uploadImprovedPaper, name="improvedPaper"),
-    path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload')
+    path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload'),
+
+
+    path('textMining/ajax/categorie', generalviews.ajaxCategorie, name='ajaxCateogrie')
 ]
