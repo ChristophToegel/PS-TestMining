@@ -8,7 +8,8 @@
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
             aria-expanded="false" aria-controls="collapseExample">
         Details
-    </button>
+    </button></div>
+    </br>
     <div class="collapse" id="collapseExample">
         <table id="table" class="table table-bordered">
             <thead>
@@ -20,7 +21,7 @@
             <tbody>
             {% for paper in validPaper %}
                 <tr>
-                    <td>done</td>
+                    <td><span><i class="glyphicon glyphicon-ok-circle"></i></span></td>
                     <td>{{ paper.name }}</td>
                 </tr>
             {% endfor %}
@@ -30,7 +31,7 @@
     <hr>
     {% if invalidPaper %}
         <div id="invalidPaper">
-            <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen und Fehlerhafe Paper ignorieren</a>
+            <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen und fehlerhafe Paper ignorieren</a>
             <h5><span id="invalidPaperNum">{{ invalidPaper|length }}</span> Nicht valide Paper:</h5>
             {% for paper in invalidPaper %}
                 <div class="jumbotron">
@@ -123,7 +124,7 @@
                         }
                         //invalidPaper -1; vaild+1; invalidPaper==0 dann weg!
                     } else {
-                        showModal("Paper passt immernoned!", json['errors'][0]);
+                        showModal("Paper fehlerhaft! Bitte bessern sie folgende Fehler aus, um einen fehlerfreien Upload zu ermöglichen. Wenn Sie das Paper nicht zum Korpus hinzufügen wollen, drücken Sie 'Paper hochladen und fehlerhafte Paper ignorieren'", json['errors'][0]);
                         console.log("file again not valid!");
                         $(form).find('#errorSektion').html('');
                         json['errors'].forEach(function (element) {
