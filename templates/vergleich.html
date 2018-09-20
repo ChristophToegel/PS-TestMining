@@ -25,6 +25,7 @@
                     <!--Kategorie-->
                     <label>Kategorie</label>
                     <select id="categorie" class="form-control">
+                        <option>-</option>
                         {% for kategorie in categories %}
                             <option>{{ kategorie }}</option>
                         {% endfor %}
@@ -33,13 +34,10 @@
                 </div>
                 <div class="form-group">
                  <!--Journals-->
-                 <label>Journals</label>
-                    <select id="journales" class="form-control">
-                    </select>
-                 <!--<br>
-                 <form>
-                     <input type="Checkbox"> {% for  journal in journals %} journal {% endfor %} <br>
-                 </form>-->
+                 <label>Journales</label>
+                    <br>
+                    <div class="check-element" id="labeljournales">
+                    </div>
                 </div>
 
             <!--Autor-Freitextsuche-->
@@ -93,19 +91,6 @@
                         </datalist>
                 </form>
             </div>
-
-                <div class="form-group">
-                    <!--Texteinheiten-->
-                    <label>Möchten Sie nur bestimmte Texteinheiten analysieren?</label>
-                    <select class="form-control">
-                        <option>alle</option>
-                        <option>Abstract</option>
-                        <option>Introduction</option>
-                        <option>Discussion</option>
-                        <option>Conclusion</option>
-                    </select>
-                </div>
-
             </form>
 
             <p>Ihr Korpus besteht aus folgenden Papern:</p>
@@ -131,7 +116,8 @@
                 <div class="form-group">
                     <!--Kategorie-->
                     <label>Kategorie</label>
-                    <select class="form-control">
+                    <select id="categorie2" class="form-control">
+                        <option>-</option>
                         {% for kategorie in categories %}
                             <option>{{ kategorie }}</option>
                         {% endfor %}
@@ -140,11 +126,10 @@
                 </div>
                 <div class="form-group">
                  <!--Journals-->
-                 <label>Journals</label>
-                 <br>
-                 <form>
-                     <input type="Checkbox"> Testvalue<br>
-                 </form>
+                 <label>Journales</label>
+                    <br>
+                    <div class="check-element" id="journales2">
+                    </div>
                 </div>
 
             <!--Autor-Freitextsuche-->
@@ -190,18 +175,6 @@
                 </form>
             </div>
 
-                <div class="form-group">
-                    <!--Texteinheiten-->
-                    <label>Möchten Sie nur bestimmte Texteinheiten analysieren?</label>
-                    <select class="form-control">
-                        <option>alle</option>
-                        <option>Abstract</option>
-                        <option>Introduction</option>
-                        <option>Discussion</option>
-                        <option>Conclusion</option>
-                    </select>
-                </div>
-
             </form>
                 <p>Ihr Korpus besteht aus folgenden Papern:</p>
             <ul>
@@ -219,10 +192,16 @@
     <script>
 
      $('#categorie').change(function(event) {
-         create_post($('#categorie').val())
+         $('#labeljournales').empty()
+         create_post($('#categorie').val(), '#categorie')
      });
 
-    function create_post(categorie) {
+     $('#categorie2').change(function(event) {
+         $('#journales2').empty()
+         create_post($('#categorie2').val(), '#categorie2')
+     });
+
+    function create_post(categorie, id_name) {
             console.log("create post is working!");
             $.ajax({
                 url: "{% url "ajaxCateogrie" %}",
@@ -233,11 +212,18 @@
 
                 success: function (json) {
                     console.log("response");
+                    $('#labeljournales').append('<input type="checkbox">').append('<label>alle</label><br>');
+                    $('#journales2').append('<input type="checkbox">').append('<label>alle</label><br>');
                     for(categorie of json.journalnames){
-                        $('#journales').append($('<option>', {
-                            text : categorie
-                        }));
-                        console.log(categorie);
+                        if (id_name == '#categorie'){
+                            $('#labeljournales').append($('<input type="checkbox">')).append($('<label>', {
+                                text: categorie
+                            })).append($('<br>'))};
+                        if (id_name == '#categorie2'){
+                            $('#journales2').append($('<input type="checkbox">')).append($('<label>', {
+                                text: categorie
+                            })).append($('<br>'))};
+
                     }
                 },
                 error: function (xhr, errmsg, err) {

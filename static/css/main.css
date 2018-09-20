@@ -159,3 +159,21 @@ button {
     color: white !important;
 }
 
+.check-element > label {
+    font-size: 16px;
+    color: black;
+    font-weight: normal;
+}
+
+.tablebold {
+    font-weight: bold;
+    text-align: start;
+}
+
+#page-wrapper {
+    margin: 0 0 0 160px !important;
+}
+
+.sidebar {
+    width: 160px !important;
+}
