@@ -4,7 +4,7 @@
 {% block body %}
 
     <div class="container">
-    <h5><span id="validPaperNum">{{ validPaper|length }} </span> valide Paper </h5>
+    <h3><span id="validPaperNum">{{ validPaper|length }} </span> Valide Paper:</h3>
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
             aria-expanded="false" aria-controls="collapseExample">
         Details
@@ -14,7 +14,7 @@
         <table id="table" class="table table-bordered">
             <thead>
             <tr>
-                <th>Valide</th>
+                <th>Status</th>
                 <th>Name</th>
             </tr>
             </thead>
@@ -31,8 +31,8 @@
     <hr>
     {% if invalidPaper %}
         <div id="invalidPaper">
-            <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen und fehlerhafe Paper ignorieren</a>
-            <h5><span id="invalidPaperNum">{{ invalidPaper|length }}</span> Nicht valide Paper:</h5>
+            <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen ohne fehlerhafte Paper</a>
+            <h3><span id="invalidPaperNum">{{ invalidPaper|length }}</span> Fehlerhafte Paper:</h3>
             {% for paper in invalidPaper %}
                 <div class="jumbotron">
                     <form id="submitSingelPaper" action="{% url "improvedPaper" %}" method="POST">
@@ -50,7 +50,7 @@
                     {{ paper.data }}
                 </textarea>
                         <button class="btn btn-default" type="button" onclick="prettyPrint()">prettify</button>
-                        <button class="btn btn-default" type="submit" id="submitSingelPaperButton">Paper hinzufügen
+                        <button class="btn btn-default" type="submit" id="submitSingelPaperButton">Paper zum Korpus hinzufügen
                         </button>
                     </form>
                 </div>
@@ -71,7 +71,7 @@
                             <p id="modaltext"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
                         </div>
                     </div>
 
@@ -80,6 +80,7 @@
     {% else %}
         <a href="{% url "completeUpload" %}" class="btn btn-primary" role="button">Paper hochladen</a>
     {% endif %}
+    <!--dialog id="paperFail">Fail</dialog>-->
 
     </div>
 
@@ -110,8 +111,8 @@
                     console.log("response:");
                     console.log(json['valid']);
                     if (json['valid'] == 'true') {
-                        console.log("file is valid now!");
-                        showModal("Paper wurde erfolgreich zur db hinzugefügt!", 'fi,ename etc');
+                        console.log("File ist nun zum Upload bereit!");
+                        showModal("Paper wurde erfolgreich zum Korpus hinzugefügt!", 'filename etc');
                         $(form).parent().remove();
                         $('#table tr:last').after('<tr> <td>done</td><td>' + json['filename'] + '</td></tr>');
                         console.log(parseInt($('#invalidPaperNum').html()) - 1)
@@ -124,7 +125,7 @@
                         }
                         //invalidPaper -1; vaild+1; invalidPaper==0 dann weg!
                     } else {
-                        showModal("Paper fehlerhaft! Bitte bessern sie folgende Fehler aus, um einen fehlerfreien Upload zu ermöglichen. Wenn Sie das Paper nicht zum Korpus hinzufügen wollen, drücken Sie 'Paper hochladen und fehlerhafte Paper ignorieren'", json['errors'][0]);
+                        showModal("Paper fehlerhaft! Bitte bessern sie folgende Fehler aus, um einen fehlerfreien Upload zu ermöglichen. Wenn Sie das Paper nicht zum Korpus hinzufügen wollen, drücken Sie 'Paper hochladen ohne fehlerhafte Paper'", json['errors'][0]);
                         console.log("file again not valid!");
                         $(form).find('#errorSektion').html('');
                         json['errors'].forEach(function (element) {
