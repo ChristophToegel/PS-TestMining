@@ -1,9 +1,12 @@
 h1, h3 {
     color: rgba(29, 168, 124, 1);
 }
+h4 {
+    font-size: 20px !important;
+}
 
 p{
-    font-size: 1.2vw !important;
+    font-size: 15px !important;
 }
 
 a {
