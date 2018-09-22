@@ -201,6 +201,16 @@
          create_post($('#categorie2').val(), '#categorie2')
      });
 
+
+     $('#labeljournales > #all').change(function() {
+         console.log('Funktionsaufruf klappt')
+         var checked_all_left = $('#labeljournales > #all').is(':checked');
+         console.log('checked all left: ' + checked_all_left)
+         if (checked_all_left) {
+             checkAllChildren('#labeljournales')
+         }
+     });
+
     function create_post(categorie, id_name) {
             console.log("create post is working!");
             $.ajax({
@@ -212,8 +222,8 @@
 
                 success: function (json) {
                     console.log("response");
-                    $('#labeljournales').append('<input type="checkbox">').append('<label>alle</label><br>');
-                    $('#journales2').append('<input type="checkbox">').append('<label>alle</label><br>');
+                    $('#labeljournales').append('<input type="checkbox" id="all">').append('<label>alle</label><br>');
+                    $('#journales2').append('<input type="checkbox" id="all">').append('<label>alle</label><br>');
                     for(categorie of json.journalnames){
                         if (id_name == '#categorie'){
                             $('#labeljournales').append($('<input type="checkbox">')).append($('<label>', {
@@ -231,5 +241,12 @@
                 }
             });
         }
+
+    function checkAllChildren(id){
+         children = $('' + id + ' :input');
+         print(children);
+         children.attr('checked', 'checked');
+    }
+
     </script>
 {% endblock %}
