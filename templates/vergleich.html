@@ -203,12 +203,13 @@
 
 
      $('#labeljournales > #all').change(function() {
-         console.log('Funktionsaufruf klappt')
+         console.log('Funktionsaufruf klappt');
          var checked_all_left = $('#labeljournales > #all').is(':checked');
-         console.log('checked all left: ' + checked_all_left)
+         console.log('checked all left: ' + checked_all_left);
          if (checked_all_left) {
-             checkAllChildren('#labeljournales')
+             checkAllChildren('#labeljournales');
          }
+         get_checked_journales();
      });
 
     function create_post(categorie, id_name) {
@@ -222,18 +223,41 @@
 
                 success: function (json) {
                     console.log("response");
-                    $('#labeljournales').append('<input type="checkbox" id="all">').append('<label>alle</label><br>');
-                    $('#journales2').append('<input type="checkbox" id="all">').append('<label>alle</label><br>');
+                    $('#labeljournales').append('<input type="checkbox" class="journalleft" id="all">').append('<label>alle</label><br>');
+                    $('#journales2').append('<input type="checkbox" class="journalright" id="all">').append('<label>alle</label><br>');
                     for(categorie of json.journalnames){
                         if (id_name == '#categorie'){
-                            $('#labeljournales').append($('<input type="checkbox">')).append($('<label>', {
+                            $('#labeljournales').append($('<input type="checkbox" class="jounalleft">')).append($('<label>', {
                                 text: categorie
                             })).append($('<br>'))};
                         if (id_name == '#categorie2'){
-                            $('#journales2').append($('<input type="checkbox">')).append($('<label>', {
+                            $('#journales2').append($('<input type="checkbox" class="journalright">')).append($('<label>', {
                                 text: categorie
                             })).append($('<br>'))};
 
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        }
+
+    function create_author_post(journalnames) {
+            console.log("author post is working!");
+            $.ajax({
+                url: "{% url "ajaxAuthor" %}",
+                type: "POST",
+                data: {
+                    journalnames: journalnames
+                },
+
+                success: function (json) {
+                    console.log("response for authors");
+                    for (author of json.authornames) {
+                        $('#authors').append($('<p>', {
+                            text: author
+                        }));
                     }
                 },
                 error: function (xhr, errmsg, err) {
@@ -246,6 +270,19 @@
          children = $('' + id + ' :input');
          print(children);
          children.attr('checked', 'checked');
+    }
+
+    function get_checked_journales() {
+        checked_labels = $('.journalleft:checkbox:checked').next();
+        journalnames = [];
+
+        for (names of checked_labels){
+            journalnames.append(checked_labels[i].text())
+        }
+
+        console.log(journalnames)
+        create_author_post(journalnames)
+
     }
 
     </script>

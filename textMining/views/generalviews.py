@@ -48,14 +48,15 @@ def calculateMeanImpactFactor(impact):
 #hier alles was benötigt wird rein, wird bei url:http://127.0.0.1:8000/textMining/vergleich/ aufgerufen
 def showVergleichPage(request):
     categories = Paper.objects.distinct('metaData.category')
-    countries = Paper.objects.distinct('authors.authorList.university.university_universityCountry')
-    authors = Paper.objects.distinct('authors_authorList.authorName')
-    journals = Paper.objects.distinct('metaData.journalTitle')
-    impactfactor = Paper.objects.distinct('metaData.impactfactor')
+    #countries = Paper.objects.distinct('authors.authorList.university.university_universityCountry')
+    #authors = Paper.objects.distinct('authors_authorList.authorName')
+    #journals = Paper.objects.distinct('metaData.journalTitle')
+    #impactfactor = Paper.objects.distinct('metaData.impactfactor')
     #meanimpact = calculateMeanImpactFactor(impactfactor)
-    keywords = Paper.objects.distinct('metaData.keywords')
-    context = {'categories': categories, 'countries':countries, 'authors': authors, 'journals': journals,
-               'impactfactor': impactfactor, 'keywords':keywords}
+    #keywords = Paper.objects.distinct('metaData.keywords')
+    context = {'categories': categories}
+    #context = {'categories': categories, 'countries':countries, 'authors': authors, 'journals': journals,
+     #          'impactfactor': impactfactor, 'keywords':keywords}
     return render(request, 'vergleich.html',context)
 
 #TODO DB files download!
@@ -166,4 +167,14 @@ def ajaxCategorie (request):
         journalnames= categoriePaper.distinct('metaData.journalTitle')
         print(journalnames)
         response = {'journalnames':journalnames}
+        return JsonResponse(response)
+
+@csrf_exempt
+def ajaxAuthor (request):
+    if request.method == 'POST':
+        journales=request.POST.get('journalnames')
+        journalPaper = Paper.objects(metaData_journalTitle_exact=journales)
+        authornames = journalPaper.distinct('authors.authorList.authorName')
+        print(authornames)
+        response = {'authornames':authornames}
         return JsonResponse(response)

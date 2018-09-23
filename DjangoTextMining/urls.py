@@ -39,5 +39,6 @@ urlpatterns = [
     path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload'),
 
 
-    path('textMining/ajax/categorie', generalviews.ajaxCategorie, name='ajaxCateogrie')
+    path('textMining/ajax/categorie', generalviews.ajaxCategorie, name='ajaxCateogrie'),
+    path('textMining/ajax/categorie', generalviews.ajaxAuthor, name='ajaxAuthor'),
 ]
