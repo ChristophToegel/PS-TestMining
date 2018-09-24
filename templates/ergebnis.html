@@ -336,7 +336,6 @@
             <li>abstract</li>
             <li>paper</li>
             <li>world</li>
-
             <li>common</li>
         </ul>
     </div>
@@ -348,22 +347,14 @@
     </div>
     </div>
     <div class="col-lg-6">
-
+        <form>
+              <a href="{% url 'download' %}" download><span class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-download"></i> Download files</span></a>
+        </form>
     </div>
 
-
-
     <div>
-
-            <!--<form action="{% url 'download' %}" method="get" target="_blank">
-                <span class="btn btn-primary btn-lg">
-                    <i class="glyphicon glyphicon-download"></i>
-                  <input type="submit" value="Download results">
-                </span>
-            </form>-->
-
             <form>
-              <a href="{% url 'download' %}" download><span class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-download"></i> Download files</span></a>
+              <a href="{% url 'download' %}" download ><span class="btn btn-primary btn-lg"><i class="glyphicon glyphicon-download"></i> Download files</span></a>
             </form>
     </div>
         <div class="panel-body">

@@ -35,6 +35,7 @@ urlpatterns = [
 
     path('textMining/upload/', uploadviews.uploadFiles, name='upload'),
     path('textMining/results/download/', downloadviews.downloadResults, name='download'),
+    #path('textMining/results/download/', downloadviews.downloadResults2, name='download2'),
     path('textMining/uploadImprovedPaperAjax/', uploadviews.uploadImprovedPaper, name="improvedPaper"),
     path('textMining/completeUpload/', uploadviews.completeUpload, name='completeUpload'),
 
